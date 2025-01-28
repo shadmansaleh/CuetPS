@@ -3,13 +3,14 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import {connectDB} from "./config/db.ts"
+import {connectDB} from "./config/db"
 import cookieParser from "cookie-parser";
 import ErrorHandler from "./middlewares/ErrorHandler";
 import RateLimiter from "./middlewares/RateLimiter";
 
 import authRoutes from './routes/auth';
 import photoRoutes from './routes/photos';
+import userRoutes from './routes/user';
 import exhibitionRoutes from './routes/exhibitions';
 import adminRoutes from './routes/admin';
 
@@ -33,6 +34,7 @@ app.get("/", (req: Request, res: Response) => {
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/photos', photoRoutes);
+app.use('/api/user', userRoutes);
 app.use('/api/exhibitions', exhibitionRoutes);
 app.use('/api/admin', adminRoutes);
 
