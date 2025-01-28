@@ -11,6 +11,7 @@ import RateLimiter from "./middlewares/RateLimiter";
 import authRoutes from './routes/auth';
 import photoRoutes from './routes/photos';
 import exhibitionRoutes from './routes/exhibitions';
+import adminRoutes from './routes/admin';
 
 
 const app = express();
@@ -33,6 +34,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/photos', photoRoutes);
 app.use('/api/exhibitions', exhibitionRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.use(ErrorHandler);
 
