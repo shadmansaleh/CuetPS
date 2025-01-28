@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { assert } from "console";
+// import { assert } from "console";
 
 test.describe("Landing page", () => {
   test("verify home page content", async ({ page }) => {
@@ -59,6 +59,41 @@ test.describe("Login page", () => {
     await pass_field.fill("pass");
     await login_btn.click();
     await expect(page.getByRole("button", { name: "Login" })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Logout" })).toBeVisible();
+    await page.getByRole("button", { name: "Logout" }).click();
+  });
+
+  test("login doens't work with wrong email or password", async ({ page }) => {
+    await page.goto("http://localhost:3000/login");
+    await page.getByPlaceholder("Email address").click();
+    await page.getByPlaceholder("Email address").fill("asdf@m.com");
+    await page.getByPlaceholder("Email address").press("Tab");
+    await page.getByPlaceholder("Password").fill("pioqwuoi");
+    await page.getByRole("button", { name: "Sign in" }).click();
+    await expect(page.getByText("Invalid email or password")).toBeVisible();
+
+    await page.goto("http://localhost:3000/login");
+    await page.getByPlaceholder("Email address").click();
+    await page.getByPlaceholder("Email address").fill("shadman@mail.com");
+    await page.getByPlaceholder("Email address").press("Tab");
+    await page.getByPlaceholder("Password").fill("12340970814");
+    await page.getByRole("button", { name: "Sign in" }).click();
+    await expect(page.getByText("Invalid email or password")).toBeVisible();
+
+    await page.goto("http://localhost:3000/login");
+    await page.getByPlaceholder("Email address").click();
+    await page.getByPlaceholder("Email address").fill("shadman-wrong@mail.cpm");
+    await page.getByPlaceholder("Email address").press("Tab");
+    await page.getByPlaceholder("Password").fill("pass");
+    await page.getByRole("button", { name: "Sign in" }).click();
+    await expect(page.getByText("Invalid email or password")).toBeVisible();
+
+    await page.goto("http://localhost:3000/login");
+    await page.getByPlaceholder("Email address").click();
+    await page.getByPlaceholder("Email address").fill("shadman@mail.com");
+    await page.getByPlaceholder("Email address").press("Tab");
+    await page.getByPlaceholder("Password").fill("pass");
+    await page.getByRole("button", { name: "Sign in" }).click();
     await expect(page.getByRole("button", { name: "Logout" })).toBeVisible();
     await page.getByRole("button", { name: "Logout" }).click();
   });
