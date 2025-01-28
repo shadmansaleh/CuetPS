@@ -19,7 +19,7 @@ interface ExhibitionTableProps {
 }
 
 const ExhibitionTable: React.FC<ExhibitionTableProps> = ({ exhibitionId, exhibitionName }) => {
-  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [photos, setPhotos] = useState<Photo[]>([]); // Initialize as empty array
   const [loading, setLoading] = useState(false);
   const [visibleCount, setVisibleCount] = useState(5); // Default number of visible photos
 
@@ -27,12 +27,16 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({ exhibitionId, exhibit
     const fetchPhotos = async () => {
       setLoading(true);
       try {
-        // Replace the URL below with your actual API endpoint
         const response = await axios.get(`/api/exhibitions/${exhibitionId}/photos`);
-        setPhotos(response.data);
+        if (Array.isArray(response.data)) {
+          setPhotos(response.data);
+        } else {
+          setPhotos([]); // Handle case where response is not an array
+        }
       } catch (error) {
         console.error("Error fetching photos:", error);
         message.error("Failed to load photos.");
+        setPhotos([]); // Handle error case
       } finally {
         setLoading(false);
       }
