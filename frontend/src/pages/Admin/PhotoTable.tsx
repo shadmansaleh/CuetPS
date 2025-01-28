@@ -1,3 +1,4 @@
+//PhotoTable.tsx
 import { useEffect, useState } from "react";
 import { Table, Button, message } from "antd";
 import axios from "axios";
