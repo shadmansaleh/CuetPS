@@ -1,40 +1,42 @@
-// ExhibitionTable.tsx
-import { Table, Button, message, Typography } from "antd";
+import { Table, Button, message, Typography, Spin } from "antd";
 import { useState, useEffect } from "react";
+import axios from "axios"; // Import Axios for API calls
 import styles from "./AdminPage.module.css";
 
 const { Title } = Typography;
 
-const ExhibitionTable = ({ exhibitionId, exhibitionName }: { exhibitionId: string, exhibitionName: string }) => {
-  const [photos, setPhotos] = useState<any[]>([]);
+interface Photo {
+  _id: string;
+  title: string;
+  uploader: { name: string };
+  createdAt: string;
+  photoUrl: string;
+}
+
+interface ExhibitionTableProps {
+  exhibitionId: string;
+  exhibitionName: string;
+}
+
+const ExhibitionTable: React.FC<ExhibitionTableProps> = ({ exhibitionId, exhibitionName }) => {
+  const [photos, setPhotos] = useState<Photo[]>([]); // Initialize as empty array
   const [loading, setLoading] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(5); // Number of visible photos by default
+  const [visibleCount, setVisibleCount] = useState(5); // Default number of visible photos
 
   useEffect(() => {
-    setLoading(true);
-    // Temporary hardcoded photos data for each exhibition
-    // This should be replaced by an actual API call in a real application
     const fetchPhotos = async () => {
+      setLoading(true);
       try {
-        // Fetch photos for the specific exhibition based on exhibitionId
-        if (exhibitionId === "1") {
-          setPhotos([
-            { _id: "1", title: "Photo 1", uploader: { name: "User A" }, createdAt: "2025-01-01T10:00:00Z", photoUrl: "/dummy/photo1.jpg" },
-            { _id: "2", title: "Photo 2", uploader: { name: "User B" }, createdAt: "2025-01-02T10:00:00Z", photoUrl: "/dummy/photo2.jpg" },
-            { _id: "3", title: "Photo 3", uploader: { name: "User C" }, createdAt: "2025-01-03T10:00:00Z", photoUrl: "/dummy/photo3.jpg" },
-            { _id: "4", title: "Photo 4", uploader: { name: "User D" }, createdAt: "2025-01-04T10:00:00Z", photoUrl: "/dummy/photo4.jpg" },
-            { _id: "5", title: "Photo 5", uploader: { name: "User E" }, createdAt: "2025-01-05T10:00:00Z", photoUrl: "/dummy/photo5.jpg" },
-            { _id: "6", title: "Photo 6", uploader: { name: "User F" }, createdAt: "2025-01-06T10:00:00Z", photoUrl: "/dummy/photo6.jpg" },
-          ]);
-        } else if (exhibitionId === "2") {
-          setPhotos([
-            { _id: "7", title: "Photo 7", uploader: { name: "User G" }, createdAt: "2025-01-07T10:00:00Z", photoUrl: "/dummy/photo7.jpg" },
-            { _id: "8", title: "Photo 8", uploader: { name: "User H" }, createdAt: "2025-01-08T10:00:00Z", photoUrl: "/dummy/photo8.jpg" },
-          ]);
+        const response = await axios.get(`/api/exhibitions/${exhibitionId}/photos`);
+        if (Array.isArray(response.data)) {
+          setPhotos(response.data);
+        } else {
+          setPhotos([]); // Handle case where response is not an array
         }
       } catch (error) {
         console.error("Error fetching photos:", error);
-        message.error("Failed to load photos");
+        message.error("Failed to load photos.");
+        setPhotos([]); // Handle error case
       } finally {
         setLoading(false);
       }
@@ -44,24 +46,34 @@ const ExhibitionTable = ({ exhibitionId, exhibitionName }: { exhibitionId: strin
   }, [exhibitionId]);
 
   const handleViewMoreClick = () => {
-    setVisibleCount(visibleCount + 5); // Load 5 more photos
+    setVisibleCount((prevCount) => prevCount + 5); // Load 5 more photos
   };
 
-  const downloadPhoto = async (id: string, title: string) => {
-    const link = document.createElement("a");
-    link.href = `/dummy/${title}.jpg`; // Replace with your actual download URL
-    link.setAttribute("download", `${title}.jpg`);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
+  const downloadPhoto = (id: string, title: string) => {
+    try {
+      const link = document.createElement("a");
+      link.href = `/api/photos/${id}/download`; 
+      link.setAttribute("download", `${title}.jpg`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      message.success("Photo downloaded successfully!");
+    } catch (error) {
+      console.error("Download error:", error);
+      message.error("Failed to download photo.");
+    }
   };
 
   const columns = [
-    { title: "Photo Title", dataIndex: "title", key: "title" },
+    {
+      title: "Photo Title",
+      dataIndex: "title",
+      key: "title",
+    },
     {
       title: "Uploader",
       key: "uploader",
-      render: (_: any, record: any) => record.uploader?.name || "Unknown",
+      render: (_: any, record: Photo) => record.uploader?.name || "Unknown",
     },
     {
       title: "Uploaded At",
@@ -73,17 +85,14 @@ const ExhibitionTable = ({ exhibitionId, exhibitionName }: { exhibitionId: strin
       },
     },
     {
-      title: "Action",
-      key: "action",
-      render: (_: any, record: any) => (
+      title: "Actions",
+      key: "actions",
+      render: (_: any, record: Photo) => (
         <>
-          <Button
-            type="link"
-            onClick={() => window.open(record.photoUrl, "_blank")}
-          >
+          <Button type="link" onClick={() => window.open(record.photoUrl, "_blank")}>
             View
           </Button>
-          <Button onClick={() => downloadPhoto(record._id, record.title)}>
+          <Button type="link" onClick={() => downloadPhoto(record._id, record.title)}>
             Download
           </Button>
         </>
@@ -93,21 +102,28 @@ const ExhibitionTable = ({ exhibitionId, exhibitionName }: { exhibitionId: strin
 
   return (
     <div className={styles.tableContainer}>
-      {/* Display the exhibition name before the table */}
       <Title level={3}>{exhibitionName}</Title>
-
-      <Table
-        columns={columns}
-        dataSource={photos.slice(0, visibleCount)} // Only show visible photos
-        rowKey="_id"
-        bordered
-        loading={loading}
-        pagination={false}
-      />
-      {photos.length > visibleCount && (
-        <Button type="link" onClick={handleViewMoreClick} style={{ marginTop: "10px" }}>
-          View More
-        </Button>
+      {loading ? (
+        <Spin tip="Loading photos..." />
+      ) : (
+        <>
+          <Table
+            columns={columns}
+            dataSource={photos.slice(0, visibleCount)} // Limit to visibleCount
+            rowKey="_id"
+            bordered
+            pagination={false}
+          />
+          {photos.length > visibleCount && (
+            <Button
+              type="link"
+              onClick={handleViewMoreClick}
+              style={{ marginTop: "10px" }}
+            >
+              View More
+            </Button>
+          )}
+        </>
       )}
     </div>
   );

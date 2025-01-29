@@ -6,6 +6,7 @@ import PhotoTable from "./PhotoTable";
 import CreateExhibition from "./CreateExhibition";
 import ExhibitionTable from "./ExhibitionTable";
 import styles from "./AdminPage.module.css";
+import axios from "axios";
 
 const AdminPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -19,6 +20,19 @@ const AdminPage = () => {
       { _id: "3", number: 3, name: "Artistic Vision" },
     ]);
   }, []);
+  // useEffect(() => {
+  //   async function fetchExhibitions() {
+  //     try {
+  //       const response = await axios.get("/api/exhibitions");
+  //       setExhibitions(response.data);
+  //     } catch (error) {
+  //       console.error("Error fetching exhibitions:", error);
+  //       message.error("Failed to load exhibitions.");
+  //     }
+  //   }
+  //   fetchExhibitions();
+  // }, []);
+  
 
   const handleCreateExhibitionClick = () => {
     setIsModalVisible(true);

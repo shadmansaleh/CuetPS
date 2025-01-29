@@ -12,6 +12,7 @@ import authRoutes from './routes/auth';
 import photoRoutes from './routes/photos';
 import userRoutes from './routes/user';
 import exhibitionRoutes from './routes/exhibitions';
+import adminRoutes from './routes/admin';
 
 
 const app = express();
@@ -35,6 +36,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/photos', photoRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/exhibitions', exhibitionRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.use(ErrorHandler);
 
