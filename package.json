@@ -33,6 +33,7 @@
   "dependencies": {
     "@types/express": "^5.0.0",
     "antd": "^5.23.1",
+    "express-async-handler": "^1.2.0",
     "moment": "^2.30.1"
   }
 }
