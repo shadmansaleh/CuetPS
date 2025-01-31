@@ -19,7 +19,7 @@ export const StorageUploadController = async (
       fname: req.file.filename,
       uploadFname: req.file.originalname,
       filetype: req.file.mimetype,
-      permission: req.body.permission || "private",
+      permission: req.body.permission || "public",
       permission_allowlist: allow_list,
     });
     await file.save();

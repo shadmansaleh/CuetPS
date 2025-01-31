@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "@/utils/axios";
 import type { User } from "../types";
+import Cookies from "js-cookie";
 
 interface AuthContextType {
   user: User | null;
@@ -20,21 +21,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const initializeAuth = async () => {
-      const token = localStorage.getItem("token");
+      const token = Cookies.get("token");
       if (token) {
         try {
-          const response = await axios.get(
-            "http://localhost:5000/api/auth/me",
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
+          const response = await axios.get("/api/auth/me");
           setUser(response.data.user);
         } catch (error) {
           console.error("Failed to fetch user info:", error);
-          localStorage.removeItem("token");
+          Cookies.remove("token", { path: "/" });
           setUser(null);
         }
       }
@@ -46,15 +40,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signIn = async (email: string, password: string) => {
     try {
       setLoading(true);
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        {
-          email,
-          password,
-        }
-      );
+      const response = await axios.post("/api/auth/login", {
+        email,
+        password,
+      });
       const { user, token } = response.data;
-      localStorage.setItem("token", token);
+      Cookies.set("token", token, { path: "/", sameSite: "strict" });
       setUser(user);
     } catch (error) {
       throw error;
@@ -66,16 +57,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signUp = async (email: string, password: string, name: string) => {
     try {
       setLoading(true);
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
-        {
-          email,
-          password,
-          name,
-        }
-      );
+      const response = await axios.post("/api/auth/register", {
+        email,
+        password,
+        name,
+      });
       const { user, token } = response.data;
-      localStorage.setItem("token", token);
+      Cookies.set("token", token, { path: "/", sameSite: "strict" });
       setUser(user);
     } catch (error) {
       throw error;
@@ -85,7 +73,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signOut = async () => {
-    localStorage.removeItem("token");
+    Cookies.remove("token", { path: "/" });
     setUser(null);
     navigator("/");
   };

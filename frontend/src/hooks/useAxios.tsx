@@ -1,11 +1,10 @@
 import Axios, { AxiosError } from "axios";
 import { enqueueSnackbar } from "notistack";
-import { AuthContext } from "@/contexts/AuthProvider";
+import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
 
 export const useAxios = () => {
-  const { clearAuth } = useContext(AuthContext);
+  const { signOut } = useAuth();
   const navigate = useNavigate();
 
   const axios = Axios.create({
@@ -25,10 +24,8 @@ export const useAxios = () => {
       const msg = err?.response?.data?.message;
       const code = err?.response?.status;
       if (code === 401) {
-        if (clearAuth) {
-          clearAuth();
-          navigate(`${__BASE_URL__}/login`);
-        }
+        signOut();
+        navigate(`${__BASE_URL__}/login`);
         enqueueSnackbar(`Login Expired`, {
           variant: "info",
         });
@@ -42,7 +39,6 @@ export const useAxios = () => {
       return Promise.reject(err);
     }
   );
-  const axiosErrHandler = (_: AxiosError | any) => {};
-  return { axios, axiosErrHandler };
+  return { axios };
 };
 export default useAxios;

@@ -5,6 +5,7 @@ import type { Exhibition, Photo } from "../../types";
 import PhotoUploadModal from "@/components/PhotoUploadModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { IoMdCloudUpload } from "react-icons/io";
+import Loading from "@/components/Loading";
 
 export default function ExhibitionDetails() {
   const { id } = useParams<{ id: string }>();
@@ -143,7 +144,7 @@ export default function ExhibitionDetails() {
   }, [id]);
 
   if (!exhibition) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return (

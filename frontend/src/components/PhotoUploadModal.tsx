@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { twMerge } from "tailwind-merge";
+import axios from "axios";
+import { enqueueSnackbar } from "notistack";
 
 const PhotoUploadModal = ({
   className = "",
@@ -20,12 +22,26 @@ const PhotoUploadModal = ({
     }
   };
 
-  const handleUpload = () => {
+  const handleUpload = async (e: any) => {
     if (selectedFile) {
       console.log("Uploading:", selectedFile.name);
       setSelectedFile(null);
       setPreviewUrl(null);
       setIsOpen(false);
+      const file = e.target.files[0];
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("Content-Type", file.type);
+      formData.append("permission", "public");
+      try {
+        const upload_response = await axios.post("/storage/upload", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      } catch (error) {
+        enqueueSnackbar("Profile picture upload failed", {
+          variant: "error",
+        });
+      }
     } else {
       alert("Please select a file to upload.");
     }
