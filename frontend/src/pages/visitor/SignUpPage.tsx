@@ -46,7 +46,7 @@ export default function Register() {
                 type="text"
                 required
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e: any) => setName(e.target.value)}
                 className="input input-bordered w-full"
                 placeholder="Enter your full name"
               />
@@ -62,7 +62,7 @@ export default function Register() {
                 autoComplete="email"
                 required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e: any) => setEmail(e.target.value)}
                 className="input input-bordered w-full"
                 placeholder="Enter your email"
               />
@@ -78,7 +78,7 @@ export default function Register() {
                 autoComplete="new-password"
                 required
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e: any) => setPassword(e.target.value)}
                 className="input input-bordered w-full"
                 placeholder="Enter a secure password"
               />

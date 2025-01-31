@@ -1,4 +1,4 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model, Document } from "mongoose";
 
 interface Exhibition extends Document {
   title: string;
@@ -6,7 +6,7 @@ interface Exhibition extends Document {
   start_date: Date;
   end_date: Date;
   themePhotoUrl: string;
-  status: 'upcoming' | 'active' | 'past';
+  status: "upcoming" | "active" | "past";
   created_at: Date;
 }
 
@@ -16,10 +16,14 @@ const exhibitionSchema = new Schema<Exhibition>({
   start_date: { type: Date, required: true },
   end_date: { type: Date, required: true },
   themePhotoUrl: { type: String, required: true },
-  status: { type: String, enum: ['upcoming', 'active', 'past'], default: 'upcoming' },
+  status: {
+    type: String,
+    enum: ["upcoming", "active", "past"],
+    default: "upcoming",
+  },
   created_at: { type: Date, default: Date.now },
 });
 
-const Exhibition = model<Exhibition>('Exhibition', exhibitionSchema);
+const Exhibition = model<Exhibition>("Adexhibition", exhibitionSchema);
 
 export default Exhibition;

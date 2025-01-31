@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { twMerge } from "tailwind-merge";
-import axios from "axios";
+// import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 
 const PhotoUploadModal = ({
@@ -34,9 +34,14 @@ const PhotoUploadModal = ({
       formData.append("Content-Type", file.type);
       formData.append("permission", "public");
       try {
-        const upload_response = await axios.post("/storage/upload", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        // const upload_response = await axios.post("/storage/upload", formData, {
+        //   headers: { "Content-Type": "multipart/form-data" },
+        // });
+        // if (upload_response.status === 200) {
+        //   enqueueSnackbar("Profile picture uploaded successfully", {
+        //     variant: "success",
+        //   });
+        // }
       } catch (error) {
         enqueueSnackbar("Profile picture upload failed", {
           variant: "error",

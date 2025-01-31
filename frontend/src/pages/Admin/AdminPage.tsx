@@ -1,12 +1,12 @@
 // AdminPage.tsx
-import { Tabs, Button, Modal, message } from "antd";
+import { Tabs, Button, Modal /*, message*/ } from "antd";
 import { useState, useEffect } from "react";
 import UserTable from "./UserTable";
 import PhotoTable from "./PhotoTable";
 import CreateExhibition from "./CreateExhibition";
 import ExhibitionTable from "./ExhibitionTable";
 import styles from "./AdminPage.module.css";
-import axios from "axios";
+// import axios from "axios";
 
 const AdminPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -32,7 +32,6 @@ const AdminPage = () => {
   //   }
   //   fetchExhibitions();
   // }, []);
-  
 
   const handleCreateExhibitionClick = () => {
     setIsModalVisible(true);

@@ -18,12 +18,12 @@ import ForgotPassword from "./pages/visitor/ForgotPasswordPage";
 import NotFound404 from "./pages/Common/NotFound404";
 import Exhibition from "./pages/visitor/ExhibitionPage";
 import Gallery from "./pages/visitor/Gallery";
-import ExhibitionDetails from "./pages/visitor/ExhibitionDetails.tsx";
-import Profile from "./pages/visitor/Profile.tsx";
-import AdminPage from "./pages/Admin/AdminPage.tsx";
-import CreateExhibition from "./pages/Admin/CreateExhibition.tsx";
-import PhotoTable from "./pages/Admin/PhotoTable.tsx";
-import UserTable from "./pages/Admin/UserTable.tsx";
+import ExhibitionDetails from "./pages/visitor/ExhibitionDetails";
+import Profile from "./pages/visitor/Profile";
+import AdminPage from "./pages/Admin/AdminPage";
+import CreateExhibition from "./pages/Admin/CreateExhibition";
+import PhotoTable from "./pages/Admin/PhotoTable";
+import UserTable from "./pages/Admin/UserTable";
 
 function App() {
   const [darkMode, setDarkMode] = useDarkMode();
@@ -61,7 +61,7 @@ function App() {
         { path: "user-table", element: <UserTable /> },
       ],
     },
-    
+
     {
       path: `${__BASE_URL__}/`,
       element: <ProtectedRoute role={Role.USER} />,
@@ -69,7 +69,7 @@ function App() {
     },
     { path: "*", element: <NotFound404 /> },
   ]);
-  
+
   return (
     <div className="bg-base-100">
       <NavBar />

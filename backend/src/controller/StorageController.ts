@@ -3,11 +3,12 @@ import * as types from "../types/LocalTypes";
 import { User } from "../models/User";
 import File from "../models/FileModel";
 import fs from "fs/promises";
+import { promises } from "dns";
 
 export const StorageUploadController = async (
   req: types.AuthRequest & { file: Express.Multer.File },
   res: Response
-) => {
+): Promise<any> => {
   const allow_list =
     req.body.permission === "restricted"
       ? User.find({ username: { $in: req.body.allow_list } })
@@ -36,7 +37,7 @@ export const StorageUploadController = async (
 export const StorageGetController = async (
   req: types.AuthRequest,
   res: Response
-) => {
+): Promise<any> => {
   try {
     const file = await File.findById(req.params.id).exec();
     if (!file) return res.status(400).json({ message: "File not found" });
@@ -71,7 +72,7 @@ export const StorageDeleteByID = async (id: string, user?: types.JWT_USER) => {
 export const StorageDeleteController = async (
   req: types.AuthRequest,
   res: Response
-) => {
+): Promise<any> => {
   try {
     await StorageDeleteByID(req.params.id, req?.user);
   } catch (err: any) {
