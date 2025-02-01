@@ -33,7 +33,12 @@ export function ProtectedRoute({
   if (!role) role = Role.AUTH;
   const retAccept = children ? children : <Outlet />;
   const { user } = useAuth();
-  if (role === Role.ALL) return retAccept;
+  if (
+    role === Role.ALL ||
+    (role === Role.NOADMIN && user?.role !== Role.ADMIN.toString())
+  ) {
+    return retAccept;
+  }
   if (role === Role.NOAUTH) {
     if (user !== null) return <Navigate to={alturl(user?.role)} />;
     return retAccept;
@@ -43,10 +48,7 @@ export function ProtectedRoute({
     return <Navigate to={`${__BASE_URL__}/login`} />;
   }
   if (role === Role.AUTH) return retAccept;
-  console.log(user);
   if (user.role.toString() === role.toString()) return retAccept;
-  if (role === Role.NOADMIN && user.role === Role.ADMIN.toString())
-    return <Navigate to={alturl(user.role)} />;
 
   enqueueSnackbar("You do not have permission to access this page", {
     variant: "error",

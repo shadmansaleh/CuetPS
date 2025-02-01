@@ -31,7 +31,6 @@ function App() {
   const [darkMode, setDarkMode] = useDarkMode();
   if (darkMode) setDarkMode(false);
   const { loading: authLoading } = useAuth();
-  if (authLoading) return <Loading />;
 
   const AppRoutes = useRoutes([
     {
@@ -74,6 +73,7 @@ function App() {
     { path: "*", element: <NotFound404 /> },
   ]);
 
+  if (authLoading) return <Loading />;
   return (
     <div className="bg-base-100">
       <NavBar />

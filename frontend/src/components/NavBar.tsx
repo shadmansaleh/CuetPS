@@ -83,7 +83,7 @@ function NavBar() {
     },
     {
       name: "Logout",
-      onClick: () => signOut(),
+      onClick: async () => await signOut(),
       cond: isSignedIn,
     },
   ];

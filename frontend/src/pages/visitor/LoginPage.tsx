@@ -14,8 +14,8 @@ export default function Login() {
     e.preventDefault();
     try {
       await signIn(email, password);
-      if (user?.role === "admin") navigate("/admin");
-      else navigate("/");
+      if (user?.role === "admin") await navigate("/admin");
+      else await navigate("/");
     } catch (err) {
       setError("Invalid email or password");
     }

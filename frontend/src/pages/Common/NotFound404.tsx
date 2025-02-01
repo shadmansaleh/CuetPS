@@ -3,8 +3,8 @@ import { useEffect } from "react";
 function NotFound404() {
   const navigate = useNavigate();
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      navigate(`${__BASE_URL__}/`);
+    const timeout = setTimeout(async () => {
+      await navigate(`${__BASE_URL__}/`);
     }, 3000);
     return () => {
       clearTimeout(timeout);

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Camera, Image, Award, User } from "lucide-react";
 
 export default function LandingPage() {
