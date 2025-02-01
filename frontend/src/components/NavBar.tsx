@@ -13,6 +13,7 @@ function NavBar() {
   const { user, signOut } = useAuth();
 
   const isSignedIn = user !== null;
+  const isAdmin = isSignedIn && user?.role === "admin";
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -52,20 +53,23 @@ function NavBar() {
 
   const nav_items = [
     {
-      name: "Home",
-      link: "/",
+      name: !isAdmin ? "Home" : "Admin",
+      link: !isAdmin ? "/" : "/admin",
     },
     {
       name: "Gallery",
       link: "/gallery",
+      cond: !isAdmin,
     },
     {
       name: "Exhibitions",
       link: "/exhibitions",
+      cond: !isAdmin,
     },
     {
       name: "About us",
       link: "/about",
+      cond: !isAdmin,
     },
     {
       name: "Profile",

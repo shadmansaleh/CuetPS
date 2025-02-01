@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { Camera, Image, Award } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Camera, Image, Award, User } from "lucide-react";
 
 export default function LandingPage() {
   return (

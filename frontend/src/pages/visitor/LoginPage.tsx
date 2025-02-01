@@ -8,13 +8,14 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { signIn } = useAuth();
+  const { user, signIn } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await signIn(email, password);
-      navigate("/profile");
+      if (user?.role === "admin") navigate("/admin");
+      else navigate("/");
     } catch (err) {
       setError("Invalid email or password");
     }

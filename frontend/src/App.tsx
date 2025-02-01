@@ -24,15 +24,19 @@ import AdminPage from "./pages/Admin/AdminPage";
 import CreateExhibition from "./pages/Admin/CreateExhibition";
 import PhotoTable from "./pages/Admin/PhotoTable";
 import UserTable from "./pages/Admin/UserTable";
+import { useAuth } from "./contexts/AuthContext";
+import Loading from "./components/Loading";
 
 function App() {
   const [darkMode, setDarkMode] = useDarkMode();
   if (darkMode) setDarkMode(false);
+  const { loading: authLoading } = useAuth();
+  if (authLoading) return <Loading />;
 
   const AppRoutes = useRoutes([
     {
       path: `${__BASE_URL__}/`,
-      element: <ProtectedRoute role={Role.ALL} />,
+      element: <ProtectedRoute role={Role.NOADMIN} />,
       children: [
         { index: true, element: <LandingPage /> },
         { path: "about", element: <AboutUs /> },
@@ -53,7 +57,7 @@ function App() {
     },
     {
       path: `${__BASE_URL__}/admin`,
-      // Remove ProtectedRoute for now
+      element: <ProtectedRoute role={Role.ADMIN} />,
       children: [
         { index: true, element: <AdminPage /> },
         { path: "create-exhibition", element: <CreateExhibition /> },

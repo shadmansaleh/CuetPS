@@ -37,7 +37,8 @@ const CreateExhibition: React.FC = () => {
         form.resetFields();
       }
     } catch (error: any) {
-      const errorMsg = error.response?.data?.message || "Failed to create exhibition.";
+      const errorMsg =
+        error.response?.data?.message || "Failed to create exhibition.";
       console.error("Error creating exhibition:", errorMsg);
       message.error(errorMsg);
     }
@@ -110,7 +111,9 @@ const CreateExhibition: React.FC = () => {
         >
           <DatePicker
             style={{ width: "100%" }}
-            disabledDate={(current) => current && current < moment().endOf("day")}
+            disabledDate={(current) =>
+              current && current < moment().endOf("day")
+            }
           />
         </Form.Item>
 
@@ -122,7 +125,9 @@ const CreateExhibition: React.FC = () => {
         >
           <DatePicker
             style={{ width: "100%" }}
-            disabledDate={(current) => current && current < moment().endOf("day")}
+            disabledDate={(current) =>
+              current && current < moment().endOf("day")
+            }
           />
         </Form.Item>
 
@@ -132,7 +137,9 @@ const CreateExhibition: React.FC = () => {
           label="Theme Cover Photo"
           valuePropName="fileList"
           getValueFromEvent={(e) => e?.fileList}
-          rules={[{ required: true, message: "Please upload a theme cover photo!" }]}
+          rules={[
+            { required: true, message: "Please upload a theme cover photo!" },
+          ]}
         >
           <Upload {...uploadProps} showUploadList={false}>
             <Button icon={<UploadOutlined />} style={{ width: "100%" }}>

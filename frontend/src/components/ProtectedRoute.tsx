@@ -9,6 +9,18 @@ export enum Role {
   AUTH = "auth",
   USER = "user",
   ADMIN = "admin",
+  NOADMIN = "no_admin",
+}
+
+function alturl(role: string) {
+  switch (role) {
+    case Role.ADMIN:
+      return `${__BASE_URL__}/admin`;
+    case Role.USER:
+      return `${__BASE_URL__}/`;
+    default:
+      return `${__BASE_URL__}/`;
+  }
 }
 
 export function ProtectedRoute({
@@ -23,7 +35,7 @@ export function ProtectedRoute({
   const { user } = useAuth();
   if (role === Role.ALL) return retAccept;
   if (role === Role.NOAUTH) {
-    if (user !== null) return <Navigate to={`${__BASE_URL__}/`} />;
+    if (user !== null) return <Navigate to={alturl(user?.role)} />;
     return retAccept;
   }
   if (!user) {
@@ -31,11 +43,15 @@ export function ProtectedRoute({
     return <Navigate to={`${__BASE_URL__}/login`} />;
   }
   if (role === Role.AUTH) return retAccept;
+  console.log(user);
   if (user.role.toString() === role.toString()) return retAccept;
+  if (role === Role.NOADMIN && user.role === Role.ADMIN.toString())
+    return <Navigate to={alturl(user.role)} />;
+
   enqueueSnackbar("You do not have permission to access this page", {
     variant: "error",
   });
-  return <Navigate to={`${__BASE_URL__}/`} />;
+  return <Navigate to={alturl(user.role)} />;
 }
 
 export default ProtectedRoute;

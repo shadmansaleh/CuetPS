@@ -12,7 +12,8 @@
     "dev:backend": "cd backend && npm run dev",
     "setup": "npm install && concurrently -s all -n 'FE,BE' -c \"green,blue\"  \"npm run setup:frontend\" \"npm run setup:backend\"",
     "setup:frontend": "cd frontend && npm install && cp .env.local.example .env.local",
-    "setup:backend": "cd backend && npm install && cp .env.example .env"
+    "setup:backend": "cd backend && npm install && cp .env.example .env",
+    "seed": "cd backend && npm run seed"
   },
   "keywords": [],
   "author": "",
