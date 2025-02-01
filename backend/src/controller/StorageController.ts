@@ -3,7 +3,6 @@ import * as types from "../types/LocalTypes";
 import { User } from "../models/User";
 import File from "../models/FileModel";
 import fs from "fs/promises";
-import { promises } from "dns";
 
 export const StorageUploadController = async (
   req: types.AuthRequest & { file: Express.Multer.File },
@@ -24,10 +23,7 @@ export const StorageUploadController = async (
       permission_allowlist: allow_list,
     });
     await file.save();
-    res.status(200).json({
-      message: "File uploaded",
-      file: file._id,
-    });
+    res.status(200).json(`${process.env.BACKEND_URL}/api/storage/${file._id}`);
   } catch (e: any) {
     console.error(e.message);
     return res.status(400).json({ message: "Error uploading file" });

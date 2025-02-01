@@ -50,11 +50,12 @@ export default function ExhibitionDetails() {
             </span>
           </div>
         </div>
-        <MasonryGallery
-          photos={exhibition.photos.map((photo) => photo.image)}
-        />
+        <MasonryGallery photos={exhibition.photos} />
         {user && (
-          <PhotoUploadModal className="absolute bottom-12 right-12">
+          <PhotoUploadModal
+            className="absolute bottom-12 right-12"
+            exhibitionId={id as string}
+          >
             <IoMdCloudUpload className="text-blue-600 cursor-pointer h-16 w-16" />
           </PhotoUploadModal>
         )}

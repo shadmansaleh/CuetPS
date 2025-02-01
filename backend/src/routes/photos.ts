@@ -6,7 +6,7 @@ import { getRandomK } from "../utils/utils";
 
 const router = express.Router();
 
-router.get("/:count?", (async (req, res) => {
+router.get("/all/:count?", (async (req, res) => {
   const count = parseInt(req.params.count) || null;
   try {
     let photos = null;
@@ -28,7 +28,7 @@ router.get("/user/:id", async (req, res) => {
 });
 
 // Upload a photo
-router.post("/", auth, (async (req: AuthRequest, res) => {
+router.post("/upload", auth, (async (req: AuthRequest, res) => {
   try {
     const photo = new Photo({
       ...req.body,
@@ -38,6 +38,42 @@ router.post("/", auth, (async (req: AuthRequest, res) => {
     res.status(201).json(photo);
   } catch (error) {
     res.status(400).json({ error: "Upload failed" });
+  }
+}) as RequestHandler);
+
+router.get("/:id", (async (req, res) => {
+  try {
+    const photo = await Photo.findById(req.params.id);
+    if (!photo) {
+      return res.status(404).json({ error: "Photo not found" });
+    }
+    res.json(photo.image_url);
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+}) as RequestHandler);
+
+router.get("/:id/details", (async (req, res) => {
+  try {
+    const photo = await Photo.findById(req.params.id);
+    if (!photo) {
+      return res.status(404).json({ error: "Photo not found" });
+    }
+    res.json(photo);
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+}) as RequestHandler);
+
+router.get("/:id/download", (async (req, res) => {
+  try {
+    const photo = await Photo.findById(req.params.id);
+    if (!photo) {
+      return res.status(404).json({ error: "Photo not found" });
+    }
+    res.redirect(photo.image_url);
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
   }
 }) as RequestHandler);
 

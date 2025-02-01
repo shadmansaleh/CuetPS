@@ -2,8 +2,9 @@ import React from "react";
 import { Form, Input, DatePicker, Button, message, Card } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { Upload, UploadProps } from "antd";
-import axios from "axios";
+import axios from "@/utils/axios";
 import moment, { Moment } from "moment";
+import { QueryClient } from "react-query";
 
 // Define the interface for form values
 interface ExhibitionFormValues {
@@ -16,27 +17,39 @@ interface ExhibitionFormValues {
 
 const CreateExhibition: React.FC = () => {
   const [form] = Form.useForm();
+  const queryClient = new QueryClient();
 
   const onFinish = async (values: ExhibitionFormValues) => {
     try {
-      const formData = new FormData();
-      formData.append("title", values.title);
-      formData.append("description", values.description); // Adding description
-      formData.append("start_date", values.start_date!.toISOString()); // Format date as ISO string
-      formData.append("end_date", values.end_date!.toISOString()); // Format date as ISO string
-      formData.append("themePhoto", values.themePhoto[0].originFileObj); // Access the uploaded file
+      const uploadThumbnailData = new FormData();
+      const file = values.themePhoto[0].originFileObj;
+      uploadThumbnailData.append("file", file);
+      uploadThumbnailData.append("contentType", file.type);
+      const uploaded = await axios.post(
+        "/api/storage/upload",
+        uploadThumbnailData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      if (uploaded.status === 200) {
+        const response = await axios.post("/api/exhibitions/create", {
+          title: values.title,
+          description: values.description,
+          start_date: values.start_date!.toISOString(),
+          end_date: values.end_date!.toISOString(),
+          thumbnail_url: uploaded.data,
+          status: "upcoming",
+        });
 
-      // Post the data to the backend to create an exhibition
-      const response = await axios.post("/api/exhibitions", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      // Handle success and reset the form
-      if (response.status === 201) {
-        message.success("Exhibition created successfully.");
-        form.resetFields();
+        if (response.status === 201) {
+          message.success("Exhibition created successfully.");
+          form.resetFields();
+          queryClient.invalidateQueries("exhibitions");
+        }
       }
     } catch (error: any) {
+      console.log(error);
       const errorMsg =
         error.response?.data?.message || "Failed to create exhibition.";
       console.error("Error creating exhibition:", errorMsg);

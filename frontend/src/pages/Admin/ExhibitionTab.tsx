@@ -3,7 +3,6 @@ import { Button, Modal } from "antd";
 import { useState } from "react";
 import CreateExhibition from "./CreateExhibition";
 import ExhibitionTable from "./ExhibitionTable";
-import styles from "./AdminPage.module.css";
 import { useQuery } from "react-query";
 import axios from "@/utils/axios";
 import Loading from "@/components/Loading";
@@ -36,11 +35,11 @@ function ExhibitionTab() {
 
   if (exhibitionQuery.isLoading) return <Loading />;
   return (
-    <div>
+    <div className="flex flex-col">
       <Button
         type="primary"
         onClick={handleCreateExhibitionClick}
-        style={{ marginBottom: "20px" }}
+        className="mb-5 ml-auto "
       >
         Create Exhibition
       </Button>

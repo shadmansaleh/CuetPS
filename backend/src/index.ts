@@ -38,7 +38,7 @@ app.use("/api/photos", photoRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/exhibitions", exhibitionRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("api/storage", StorageRoute);
+app.use("/api/storage", StorageRoute);
 app.use(ErrorHandler);
 
 async function main() {

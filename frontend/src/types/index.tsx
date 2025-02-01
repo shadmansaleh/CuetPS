@@ -30,7 +30,7 @@ export interface Exhibition {
   thumbnail_url: string;
   start_date: string;
   end_date: string;
-  photos: { image: Photo; selected: boolean }[];
+  photos: Photo[];
   status: "upcoming" | "active" | "past";
   created_at: string;
 }

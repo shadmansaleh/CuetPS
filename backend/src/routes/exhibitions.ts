@@ -2,6 +2,7 @@ import express, { Response } from "express";
 import { auth, authAdmin, AuthRequest } from "../middlewares/auth";
 import { Exhibition } from "../models/Exhibition";
 import { populate } from "dotenv";
+import Photo from "../models/Photo";
 
 const router = express.Router();
 
@@ -25,6 +26,9 @@ router.get("/:id", async (req, res): Promise<any> => {
     if (!exhibition) {
       return res.status(404).json({ error: "Exhibition not found" });
     }
+    exhibition.photos = exhibition.photos
+      .filter((photo: any) => photo.selected)
+      .map((photo: any) => photo.image);
     res.status(200).json(exhibition);
   } catch (error) {
     res.status(500).json({ error: "Server error" });
@@ -129,7 +133,7 @@ router.get(
 );
 
 // Create exhibition (admin only)
-router.post("/", auth, async (req: AuthRequest, res): Promise<any> => {
+router.post("/create", auth, async (req: AuthRequest, res): Promise<any> => {
   try {
     if (req.user.role !== "admin") {
       return res.status(403).json({ error: "Not authorized" });
@@ -154,8 +158,15 @@ router.post(
         return res.status(404).json({ error: "Exhibition not found" });
       }
 
+      const photo = new Photo({ ...req.body, user: req.user._id });
+      if (!photo) {
+        throw new Error("Failed to create photo object");
+      }
+
+      await photo.save();
+
       exhibition.photos.push({
-        photo: req.body.photoId,
+        photo: photo,
         selected: false,
       });
 

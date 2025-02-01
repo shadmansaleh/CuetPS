@@ -29,7 +29,6 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({
         const { data } = await axios.get(
           `/api/exhibitions/${exhibitionId}/photos`
         );
-        console.log("exhibition-photos", data);
         return data;
       },
       onSuccess: (data: Photo[]) => setPhotos(data),
@@ -40,7 +39,7 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({
         const { data } = await axios.get(
           `/api/exhibitions/${exhibitionId}/approval`
         );
-        console.log("exhibition-approval", data);
+        console.log(`Approval Requests: ${exhibitionTitle}`, data);
         return data;
       },
       onSuccess: (data: Photo[]) => setApprovalRequests(data),
@@ -161,15 +160,19 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({
   return (
     <div className={styles.tableContainer}>
       <Title level={3}>{exhibitionTitle}</Title>
-      <Title level={4}>Submissions</Title>
-      <Table
-        columns={genTableColumns(true)}
-        dataSource={approvalRequests.slice(0, visibleCount)} // Limit to visibleCount
-        rowKey="_id"
-        bordered
-        pagination={false}
-        loading={queries[1].isLoading}
-      />
+      {approvalRequests.length > 0 && (
+        <>
+          <Title level={4}>New Submissions</Title>
+          <Table
+            columns={genTableColumns(true)}
+            dataSource={approvalRequests.slice(0, visibleCount)} // Limit to visibleCount
+            rowKey="_id"
+            bordered
+            pagination={false}
+            loading={queries[1].isLoading}
+          />
+        </>
+      )}
       <Title level={4}>Photos</Title>
       <Table
         columns={genTableColumns(false)}

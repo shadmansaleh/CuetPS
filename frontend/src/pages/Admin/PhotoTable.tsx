@@ -13,7 +13,7 @@ const PhotoTable = () => {
   const photoQuery = useQuery(
     "all-photos",
     async () => {
-      const { data } = await axios.get("/api/photos/");
+      const { data } = await axios.get("/api/photos/all/");
       return data;
     },
     {
