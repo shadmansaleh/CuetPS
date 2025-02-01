@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { Link } from "react-router-dom";
+import { enqueueSnackbar } from "notistack";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -17,6 +18,7 @@ export default function Login() {
       if (user?.role === "admin") await navigate("/admin");
       else await navigate("/");
     } catch (err) {
+      enqueueSnackbar("Invalid email or password", { variant: "error" });
       setError("Invalid email or password");
     }
   };
@@ -45,7 +47,7 @@ export default function Login() {
               <input
                 id="email-address"
                 name="email"
-                type="email"
+                type="text"
                 autoComplete="email"
                 required
                 value={email}

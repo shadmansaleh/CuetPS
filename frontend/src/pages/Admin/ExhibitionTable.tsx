@@ -18,7 +18,10 @@ interface ExhibitionTableProps {
   exhibitionName: string;
 }
 
-const ExhibitionTable: React.FC<ExhibitionTableProps> = ({ exhibitionId, exhibitionName }) => {
+const ExhibitionTable: React.FC<ExhibitionTableProps> = ({
+  exhibitionId,
+  exhibitionName,
+}) => {
   const [photos, setPhotos] = useState<Photo[]>([]); // Initialize as empty array
   const [loading, setLoading] = useState(false);
   const [visibleCount, setVisibleCount] = useState(5); // Default number of visible photos
@@ -27,7 +30,9 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({ exhibitionId, exhibit
     const fetchPhotos = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`/api/exhibitions/${exhibitionId}/photos`);
+        const response = await axios.get(
+          `/api/exhibitions/${exhibitionId}/photos`
+        );
         if (Array.isArray(response.data)) {
           setPhotos(response.data);
         } else {
@@ -52,7 +57,7 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({ exhibitionId, exhibit
   const downloadPhoto = (id: string, title: string) => {
     try {
       const link = document.createElement("a");
-      link.href = `/api/photos/${id}/download`; 
+      link.href = `/api/photos/${id}/download`;
       link.setAttribute("download", `${title}.jpg`);
       document.body.appendChild(link);
       link.click();
@@ -81,7 +86,9 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({ exhibitionId, exhibit
       key: "createdAt",
       render: (date: string) => {
         const formattedDate = new Date(date);
-        return !isNaN(formattedDate.getTime()) ? formattedDate.toLocaleString() : "Invalid Date";
+        return !isNaN(formattedDate.getTime())
+          ? formattedDate.toLocaleString()
+          : "Invalid Date";
       },
     },
     {
@@ -89,10 +96,16 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({ exhibitionId, exhibit
       key: "actions",
       render: (_: any, record: Photo) => (
         <>
-          <Button type="link" onClick={() => window.open(record.photoUrl, "_blank")}>
+          <Button
+            type="link"
+            onClick={() => window.open(record.photoUrl, "_blank")}
+          >
             View
           </Button>
-          <Button type="link" onClick={() => downloadPhoto(record._id, record.title)}>
+          <Button
+            type="link"
+            onClick={() => downloadPhoto(record._id, record.title)}
+          >
             Download
           </Button>
         </>
