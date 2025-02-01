@@ -7,8 +7,22 @@ const router = express.Router();
 // Get all exhibitions
 router.get("/", async (req, res) => {
   try {
-    const exhibitions = await Exhibition.find().populate("photos.photo");
+    const exhibitions = await Exhibition.find();
     res.json(exhibitions);
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.get("/:id", async (req, res): Promise<any> => {
+  try {
+    const exhibition = await Exhibition.findById(req.params.id).populate(
+      "photos"
+    );
+    if (!exhibition) {
+      return res.status(404).json({ error: "Exhibition not found" });
+    }
+    res.json(exhibition);
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }

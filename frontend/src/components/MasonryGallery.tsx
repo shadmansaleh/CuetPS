@@ -33,7 +33,7 @@ export default function MasonryGallery({
       >
         {photos.map((photo, index) => (
           <div
-            key={photo.id}
+            key={index}
             className="mb-4 relative group cursor-pointer"
             onClick={() => setSelectedIndex(index)}
           >
@@ -47,7 +47,7 @@ export default function MasonryGallery({
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    onVote(photo.id);
+                    onVote(photo._id);
                   }}
                   className="absolute top-2 right-2 p-2 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 >
