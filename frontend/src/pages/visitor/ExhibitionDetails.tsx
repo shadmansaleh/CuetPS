@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import MasonryGallery from "../../components/MasonryGallery";
-import type { Exhibition, Photo } from "../../types";
+import type { Exhibition } from "../../types";
 import PhotoUploadModal from "@/components/PhotoUploadModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { IoMdCloudUpload } from "react-icons/io";

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import MasonryGallery from "../../components/MasonryGallery";
 import type { Photo } from "../../types";
 import axios from "@/utils/axios";

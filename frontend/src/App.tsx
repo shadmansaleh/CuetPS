@@ -67,7 +67,7 @@ function App() {
 
     {
       path: `${__BASE_URL__}/`,
-      element: <ProtectedRoute role={Role.USER} />,
+      element: <ProtectedRoute role={Role.AUTH} />,
       children: [{ path: "profile", element: <Profile /> }],
     },
     { path: "*", element: <NotFound404 /> },

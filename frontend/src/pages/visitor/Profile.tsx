@@ -1,32 +1,33 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import MasonryGallery from "../../components/MasonryGallery";
 import type { Photo } from "../../types";
 import { useAuth } from "../../contexts/AuthContext";
 import PhotoUploadModal from "@/components/PhotoUploadModal";
+import { useQuery } from "react-query";
+import axios from "@/utils/axios";
+import Loading from "@/components/Loading";
 
 export default function Profile() {
   const { user } = useAuth();
   const [photos, setPhotos] = useState<Photo[]>([]);
 
-  useEffect(() => {
-    // TODO: Fetch user's photos from API
-    setPhotos([
-      {
-        id: "1",
-        title: "Mountain Landscape",
-        description: "Beautiful mountain view at sunset",
-        image_url:
-          "https://images.unsplash.com/photo-1506905925346-21bda4d32df4",
-        user_id: "1",
-        votes: 42,
-        created_at: new Date().toISOString(),
-      },
-      // Add more sample photos
-    ]);
-  }, []);
+  const photosQuery = useQuery(
+    ["user-photos", user?._id],
+    async () => {
+      const { data } = await axios.get(`/api/photos/user/${user?._id}`);
+      return data;
+    },
+    {
+      enabled: !!user,
+      onSuccess: (data) => setPhotos(data),
+    }
+  );
 
   if (!user) {
     return <div>Please log in to view your profile.</div>;
+  }
+  if (photosQuery.isLoading) {
+    return <Loading />;
   }
 
   return (

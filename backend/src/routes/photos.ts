@@ -18,6 +18,15 @@ router.get("/:count?", (async (req, res) => {
   }
 }) as RequestHandler);
 
+router.get("/user/:id", async (req, res) => {
+  try {
+    const photos = await Photo.find({ user: req.params.id });
+    res.json(photos);
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 // Upload a photo
 router.post("/", auth, (async (req: AuthRequest, res) => {
   try {

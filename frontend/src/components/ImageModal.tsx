@@ -64,7 +64,7 @@ export default function ImageModal({
         />
         <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-4">
           <h3 className="text-xl font-bold">{photo.title}</h3>
-          {photo.description && <p className="mt-2">{photo.description}</p>}
+          {photo.caption && <p className="mt-2">{photo.caption}</p>}
         </div>
       </div>
 
