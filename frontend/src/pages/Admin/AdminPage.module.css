@@ -1,52 +1,52 @@
 /* AdminPage.module.css */
 
 .tableContainer {
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    margin-bottom: 20px;
-  }
-  
-  .tableTitle {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 16px;
-  }
-  
-  .ant-table {
-    font-size: 14px;
-  }
-  
-  .ant-btn {
-    margin-right: 8px;
-  }
-  
-  .ant-tabs-tab {
-    font-size: 16px;
-  }
-  /* AdminPage.module.css */
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.tableTitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.ant-table {
+  font-size: 14px;
+}
+
+.ant-btn {
+  margin-right: 8px;
+}
+
+.ant-tabs-tab {
+  font-size: 16px;
+}
+/* AdminPage.module.css */
 
 .adminPage {
-    padding: 40px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  .pageTitle {
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 32px;
-  }
-  
-  .tabs {
-    background-color: #fafafa;
-    border-radius: 8px;
-    padding: 20px;
-  }
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
 
-  /* AdminPage.module.css */
+.pageTitle {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.tabs {
+  background-color: #fafafa;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+/* AdminPage.module.css */
 .adminPage {
   display: flex;
   flex-direction: column;
@@ -80,8 +80,8 @@
 }
 
 .tableContainer {
-  max-height: 400px; /* Set a maximum height for the table */
-  overflow-y: auto;  /* Enable vertical scrolling */
+  max-height: 600px; /* Set a maximum height for the table */
+  overflow-y: auto; /* Enable vertical scrolling */
   margin-bottom: 20px;
 }
 

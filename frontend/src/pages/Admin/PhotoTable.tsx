@@ -1,35 +1,26 @@
 //PhotoTable.tsx
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Table, Button, message } from "antd";
-import axios from "axios";
+import axios from "@/utils/axios";
 import styles from "./AdminPage.module.css";
+import { useQuery } from "react-query";
+import Loading from "@/components/Loading";
+import { Photo } from "@/types";
 
 const PhotoTable = () => {
-  const [photos, setPhotos] = useState<any[]>([]); // Ensure photos is always an array
-  const [loading, setLoading] = useState(false);
+  const [photos, setPhotos] = useState<Photo[]>([]); // Ensure photos is always an array
 
-  useEffect(() => {
-    fetchPhotos();
-  }, []);
-
-  const fetchPhotos = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get("/api/photos");
-      if (Array.isArray(response.data)) {
-        setPhotos(response.data);
-      } else {
-        message.error("Unexpected response format from API.");
-        setPhotos([]); // Ensure photos is an empty array on error
-      }
-    } catch (error) {
-      console.error("Error fetching photos:", error);
-      message.error("Failed to fetch photos.");
-      setPhotos([]); // Ensure photos is an empty array on error
-    } finally {
-      setLoading(false);
+  const photoQuery = useQuery(
+    "all-photos",
+    async () => {
+      const { data } = await axios.get("/api/photos/");
+      return data;
+    },
+    {
+      onSuccess: (data) => setPhotos(data),
+      onError: () => message.error("Failed to fetch photos."),
     }
-  };
+  );
 
   const downloadPhoto = async (id: string, title: string) => {
     try {
@@ -54,7 +45,8 @@ const PhotoTable = () => {
     {
       title: "Uploader",
       key: "uploader",
-      render: (_: any, record: any) => record.uploader?.name || "Unknown",
+      render: (_: any, photo: Photo) =>
+        typeof photo.user === "object" ? photo.user.name : "Unknown",
     },
     {
       title: "Uploaded At",
@@ -63,21 +55,23 @@ const PhotoTable = () => {
       render: (date: string) => {
         // Ensure the date is properly formatted
         const formattedDate = new Date(date);
-        return !isNaN(formattedDate.getTime()) ? formattedDate.toLocaleString() : "Invalid Date";
+        return !isNaN(formattedDate.getTime())
+          ? formattedDate.toLocaleString()
+          : "Invalid Date";
       },
     },
     {
       title: "Action",
       key: "action",
-      render: (_: any, record: any) => (
+      render: (_: any, photo: Photo) => (
         <>
           <Button
             type="link"
-            onClick={() => window.open(record.photoUrl, "_blank")}
+            onClick={() => window.open(photo.image_url, "_blank")}
           >
             View
           </Button>
-          <Button onClick={() => downloadPhoto(record._id, record.title)}>
+          <Button onClick={() => downloadPhoto(photo._id, photo.title)}>
             Download
           </Button>
         </>
@@ -85,6 +79,7 @@ const PhotoTable = () => {
     },
   ];
 
+  if (photoQuery.isLoading) return <Loading />;
   return (
     <div className={styles.tableContainer}>
       <h2 className={styles.tableTitle}>Manage Submitted Photos</h2>
@@ -93,8 +88,10 @@ const PhotoTable = () => {
         dataSource={photos}
         rowKey="_id"
         bordered
-        loading={loading}
-        pagination={false} // Optional: Disables pagination if not needed
+        loading={photoQuery.isLoading}
+        pagination={{
+          pageSize: 25,
+        }}
       />
     </div>
   );

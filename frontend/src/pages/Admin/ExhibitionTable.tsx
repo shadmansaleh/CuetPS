@@ -1,63 +1,81 @@
-import { Table, Button, message, Typography, Spin } from "antd";
-import { useState, useEffect } from "react";
-import axios from "axios"; // Import Axios for API calls
+import { Table, Button, message, Typography } from "antd";
+import { useState } from "react";
+import axios from "@/utils/axios"; // Import Axios for API calls
 import styles from "./AdminPage.module.css";
+import { Photo } from "@/types";
+import { useMutation, useQueries, useQueryClient } from "react-query";
 
 const { Title } = Typography;
 
-interface Photo {
-  _id: string;
-  title: string;
-  uploader: { name: string };
-  createdAt: string;
-  photoUrl: string;
-}
-
 interface ExhibitionTableProps {
   exhibitionId: string;
-  exhibitionName: string;
+  exhibitionTitle: string;
 }
 
 const ExhibitionTable: React.FC<ExhibitionTableProps> = ({
   exhibitionId,
-  exhibitionName,
+  exhibitionTitle,
 }) => {
-  const [photos, setPhotos] = useState<Photo[]>([]); // Initialize as empty array
-  const [loading, setLoading] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(5); // Default number of visible photos
+  const [visibleCount, setVisibleCount] = useState(5);
+  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [approvalRequests, setApprovalRequests] = useState<Photo[]>([]);
 
-  useEffect(() => {
-    const fetchPhotos = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(
+  const queryClient = useQueryClient();
+
+  const queries = useQueries([
+    {
+      queryKey: ["exhibition-photos", exhibitionId],
+      queryFn: async () => {
+        const { data } = await axios.get(
           `/api/exhibitions/${exhibitionId}/photos`
         );
-        if (Array.isArray(response.data)) {
-          setPhotos(response.data);
-        } else {
-          setPhotos([]); // Handle case where response is not an array
-        }
-      } catch (error) {
-        console.error("Error fetching photos:", error);
-        message.error("Failed to load photos.");
-        setPhotos([]); // Handle error case
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPhotos();
-  }, [exhibitionId]);
+        console.log("exhibition-photos", data);
+        return data;
+      },
+      onSuccess: (data: Photo[]) => setPhotos(data),
+    },
+    {
+      queryKey: ["photo-approval", exhibitionId],
+      queryFn: async () => {
+        const { data } = await axios.get(
+          `/api/exhibitions/${exhibitionId}/approval`
+        );
+        console.log("exhibition-approval", data);
+        return data;
+      },
+      onSuccess: (data: Photo[]) => setApprovalRequests(data),
+    },
+  ]);
 
   const handleViewMoreClick = () => {
-    setVisibleCount((prevCount) => prevCount + 5); // Load 5 more photos
+    setVisibleCount((prevCount) => prevCount + 5); // Load 5 more exhibitionPhotos
   };
+
+  const approvalAction = useMutation(
+    async ({ photoId, accept }: { photoId: string; accept: boolean }) => {
+      const { data } = await axios.post(
+        `/api/exhibitions/${exhibitionId}/${
+          accept ? "approve" : "reject"
+        }/${photoId}`
+      );
+      return data;
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["exhibition-photos", exhibitionId]);
+        queryClient.invalidateQueries(["photo-approval", exhibitionId]);
+        message.success("Photo approved successfully");
+      },
+      onError: () => {
+        message.error("Failed to approve photo");
+      },
+    }
+  );
 
   const downloadPhoto = (id: string, title: string) => {
     try {
       const link = document.createElement("a");
-      link.href = `/api/photos/${id}/download`;
+      link.href = `/api/exhibitionPhotos/${id}/download`;
       link.setAttribute("download", `${title}.jpg`);
       document.body.appendChild(link);
       link.click();
@@ -69,7 +87,7 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({
     }
   };
 
-  const columns = [
+  const genTableColumns = (approval: boolean) => [
     {
       title: "Photo Title",
       dataIndex: "title",
@@ -78,7 +96,8 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({
     {
       title: "Uploader",
       key: "uploader",
-      render: (_: any, record: Photo) => record.uploader?.name || "Unknown",
+      render: (_: any, photo: Photo) =>
+        (typeof photo.user === "object" && photo.user?.name) || "Unknown",
     },
     {
       title: "Uploaded At",
@@ -94,20 +113,46 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({
     {
       title: "Actions",
       key: "actions",
-      render: (_: any, record: Photo) => (
+      render: (_: any, photo: Photo) => (
         <>
-          <Button
-            type="link"
-            onClick={() => window.open(record.photoUrl, "_blank")}
-          >
-            View
-          </Button>
-          <Button
-            type="link"
-            onClick={() => downloadPhoto(record._id, record.title)}
-          >
-            Download
-          </Button>
+          {approval && (
+            <>
+              <Button
+                type="link"
+                className="btn btn-sm btn-success text-white"
+                onClick={() =>
+                  approvalAction.mutate({ photoId: photo._id, accept: true })
+                }
+              >
+                Accept
+              </Button>
+              <Button
+                type="link"
+                className="btn btn-sm btn-error text-white"
+                onClick={() =>
+                  approvalAction.mutate({ photoId: photo._id, accept: false })
+                }
+              >
+                Reject
+              </Button>
+            </>
+          )}
+          <>
+            <Button
+              type="link"
+              className="btn btn-sm btn-info text-white"
+              onClick={() => window.open(photo.image_url, "_blank")}
+            >
+              View
+            </Button>
+            <Button
+              type="link"
+              className="btn btn-sm btn-info text-white"
+              onClick={() => downloadPhoto(photo._id, photo.title)}
+            >
+              Download
+            </Button>
+          </>
         </>
       ),
     },
@@ -115,28 +160,33 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({
 
   return (
     <div className={styles.tableContainer}>
-      <Title level={3}>{exhibitionName}</Title>
-      {loading ? (
-        <Spin tip="Loading photos..." />
-      ) : (
-        <>
-          <Table
-            columns={columns}
-            dataSource={photos.slice(0, visibleCount)} // Limit to visibleCount
-            rowKey="_id"
-            bordered
-            pagination={false}
-          />
-          {photos.length > visibleCount && (
-            <Button
-              type="link"
-              onClick={handleViewMoreClick}
-              style={{ marginTop: "10px" }}
-            >
-              View More
-            </Button>
-          )}
-        </>
+      <Title level={3}>{exhibitionTitle}</Title>
+      <Title level={4}>Submissions</Title>
+      <Table
+        columns={genTableColumns(true)}
+        dataSource={approvalRequests.slice(0, visibleCount)} // Limit to visibleCount
+        rowKey="_id"
+        bordered
+        pagination={false}
+        loading={queries[1].isLoading}
+      />
+      <Title level={4}>Photos</Title>
+      <Table
+        columns={genTableColumns(false)}
+        dataSource={photos.slice(0, visibleCount)} // Limit to visibleCount
+        rowKey="_id"
+        bordered
+        pagination={false}
+        loading={queries[0].isLoading}
+      />
+      {photos.length > visibleCount && (
+        <Button
+          type="link"
+          onClick={handleViewMoreClick}
+          style={{ marginTop: "10px" }}
+        >
+          View More
+        </Button>
       )}
     </div>
   );

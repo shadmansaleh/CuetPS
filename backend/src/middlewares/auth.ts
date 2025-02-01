@@ -32,3 +32,17 @@ export const auth = async (
     res.status(401).json({ error: "Please authenticate" });
   }
 };
+
+export const authAdmin = [
+  auth,
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      if (req.user.role !== "admin") {
+        throw new Error();
+      }
+      next();
+    } catch (error) {
+      res.status(403).json({ error: "Unauthorized request" });
+    }
+  },
+];

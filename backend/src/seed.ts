@@ -173,7 +173,7 @@ async function seed() {
   for (let i = 0; i < 100; i++) {
     const exhibition = exhibitions[randomInt() % exhibitions.length];
     const photo = photos_doc[i % photos_doc.length];
-    exhibition.photos.push(photo._id);
+    exhibition.photos.push({ image: photo, selected: true });
   }
 
   await Exhibition.insertMany(exhibitions);

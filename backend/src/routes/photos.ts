@@ -11,7 +11,7 @@ router.get("/:count?", (async (req, res) => {
   try {
     let photos = null;
     if (count) photos = await getRandomK(Photo, count);
-    else photos = await Photo.find().sort({ votes: -1 });
+    else photos = await Photo.find().sort({ votes: -1 }).populate("user");
     res.json(photos);
   } catch (error) {
     res.status(500).json({ error: "Server error" });

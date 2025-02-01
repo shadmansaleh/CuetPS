@@ -26,6 +26,8 @@ export default function ImageModal({
         onNext();
       } else if (event.key === "ArrowLeft" && currentIndex > 0) {
         onPrevious();
+      } else if (event.key === "Escape") {
+        onClose();
       }
     };
 

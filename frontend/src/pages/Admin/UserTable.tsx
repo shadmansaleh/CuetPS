@@ -1,8 +1,9 @@
 //UserTable.tsx
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Table, Button, message } from "antd";
-import axios from "axios";
+import axios from "@/utils/axios";
 import styles from "./AdminPage.module.css";
+import { useQuery } from "react-query";
 
 interface User {
   _id: string;
@@ -13,38 +14,23 @@ interface User {
 
 const UserTable = () => {
   const [users, setUsers] = useState<User[]>([]); // Specify User[] type
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    fetchUsers(); // Fetch users when the component is mounted
-  }, []);
-
-  const fetchUsers = async () => {
-    setLoading(true); // Show loading spinner
-    try {
-      const response = await axios.get("/api/users");
-      console.log("API Response:", response.data); // Debug API response
-
-      if (Array.isArray(response.data)) {
-        setUsers(response.data); // Set users if response is valid
-      } else {
-        message.error("Unexpected response format from API.");
-        setUsers([]); // Reset to empty array if format is invalid
-      }
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      message.error("Failed to fetch users.");
-      setUsers([]); // Reset to empty array on error
-    } finally {
-      setLoading(false); // Hide loading spinner
+  const userQuery = useQuery(
+    "users",
+    async () => {
+      const { data } = await axios.get("/api/user");
+      return data;
+    },
+    {
+      onSuccess: (data) => setUsers(data),
+      onError: () => message.error("Failed to fetch users."),
     }
-  };
+  );
 
-  const deleteUser = async (id: string) => { // Define 'id' as string
+  const deleteUser = async (id: string) => {
     try {
       await axios.delete(`/api/users/${id}`);
       message.success("User deleted successfully.");
-      fetchUsers(); // Refresh the user list after deletion
+      userQuery.refetch();
     } catch (error) {
       console.error("Error deleting user:", error);
       message.error("Failed to delete user.");
@@ -72,11 +58,11 @@ const UserTable = () => {
     {
       title: "Action",
       key: "action",
-      render: (_: any, record: User) => ( // Type 'record' as User
-        <Button
-          danger
-          onClick={() => deleteUser(record._id)}
-        >
+      render: (
+        _: any,
+        record: User // Type 'record' as User
+      ) => (
+        <Button danger onClick={() => deleteUser(record._id)}>
           Delete
         </Button>
       ),
@@ -91,7 +77,7 @@ const UserTable = () => {
         dataSource={Array.isArray(users) ? users : []} // Ensure dataSource is always an array
         rowKey="_id" // Use `_id` as unique row identifier
         bordered
-        loading={loading} // Show loading state
+        loading={userQuery.isLoading} // Show loading state
       />
     </div>
   );

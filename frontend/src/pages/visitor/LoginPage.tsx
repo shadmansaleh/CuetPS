@@ -42,7 +42,7 @@ export default function Login() {
           <div className="form-control w-full space-y-4">
             <div>
               <label htmlFor="email-address" className="label">
-                <span className="label-text">Email Address</span>
+                <span className="label-text">Email Address/Username</span>
               </label>
               <input
                 id="email-address"

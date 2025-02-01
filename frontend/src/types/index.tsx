@@ -18,7 +18,7 @@ export interface Photo {
   title: string;
   caption: string;
   image_url: string;
-  user_id: string;
+  user: string | User;
   votes: number;
   created_at: string;
 }
@@ -30,7 +30,7 @@ export interface Exhibition {
   thumbnail_url: string;
   start_date: string;
   end_date: string;
-  photos: Photo[];
+  photos: { image: Photo; selected: boolean }[];
   status: "upcoming" | "active" | "past";
   created_at: string;
 }

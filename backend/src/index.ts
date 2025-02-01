@@ -16,7 +16,7 @@ import adminRoutes from "./routes/admin";
 import StorageRoute from "./routes/StorageRoute";
 
 const app = express();
-app.use(RateLimiter(200));
+app.use(RateLimiter(2000));
 
 dotenv.config();
 const ORIGIN_URL = process.env.ORIGIN_URL || "http://localhost:3000";

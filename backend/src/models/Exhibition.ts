@@ -29,8 +29,14 @@ const exhibitionSchema = new mongoose.Schema(
     },
     photos: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Photo",
+        image: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Photo",
+        },
+        selected: {
+          type: Boolean,
+          default: false,
+        },
       },
     ],
   },

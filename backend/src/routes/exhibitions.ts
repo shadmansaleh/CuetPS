@@ -1,6 +1,7 @@
-import express from "express";
-import { auth, AuthRequest } from "../middlewares/auth";
+import express, { Response } from "express";
+import { auth, authAdmin, AuthRequest } from "../middlewares/auth";
 import { Exhibition } from "../models/Exhibition";
+import { populate } from "dotenv";
 
 const router = express.Router();
 
@@ -16,17 +17,116 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res): Promise<any> => {
   try {
-    const exhibition = await Exhibition.findById(req.params.id).populate(
-      "photos"
-    );
+    const exhibition = await Exhibition.findById(req.params.id).populate({
+      path: "photos",
+      match: { selected: true },
+      populate: { path: "image" },
+    });
     if (!exhibition) {
       return res.status(404).json({ error: "Exhibition not found" });
     }
-    res.json(exhibition);
+    res.status(200).json(exhibition);
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
 });
+
+router.get("/:id/photos", async (req, res): Promise<any> => {
+  try {
+    const exhibition = await Exhibition.findById(req.params.id).populate({
+      path: "photos",
+      match: { selected: true },
+      populate: { path: "image", populate: "user" },
+    });
+    if (!exhibition) {
+      return res.status(404).json({ error: "Exhibition not found" });
+    }
+    res
+      .status(200)
+      .json(
+        exhibition.photos
+          .filter((photo: any) => photo.selected)
+          .map((photo: any) => photo.image)
+      );
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.get(
+  "/:id/approval",
+  authAdmin,
+  async (req: AuthRequest, res: Response): Promise<any> => {
+    try {
+      const exhibition = await Exhibition.findById(req.params.id)
+        .populate({
+          path: "photos",
+          match: { selected: false },
+          populate: { path: "image", populate: "user" },
+        })
+        .select("photos");
+      if (!exhibition) {
+        return res.status(404).json({ error: "Exhibition not found" });
+      }
+      res
+        .status(200)
+        .json(
+          exhibition.photos
+            .filter((photo: any) => !photo.selected)
+            .map((photo: any) => photo.image)
+        );
+    } catch (error) {
+      res.status(500).json({ error: "Server error" });
+    }
+  }
+);
+
+router.get(
+  "/:id/approve/:photoId",
+  authAdmin,
+  async (req: AuthRequest, res: Response): Promise<any> => {
+    try {
+      const exhibition = await Exhibition.findById(req.params.id);
+      if (!exhibition) {
+        return res.status(404).json({ error: "Exhibition not found" });
+      }
+
+      const photo = exhibition.photos.id(req.params.photoId);
+      if (!photo) {
+        return res.status(404).json({ error: "Photo not found" });
+      }
+
+      photo.selected = true;
+      await exhibition.save();
+      res.json(photo);
+    } catch (error) {
+      res.status(500).json({ error: "Server error" });
+    }
+  }
+);
+
+router.get(
+  "/:id/reject/:photoId",
+  authAdmin,
+  async (req: AuthRequest, res: Response): Promise<any> => {
+    try {
+      const exhibition = await Exhibition.findById(req.params.id);
+      if (!exhibition) {
+        return res.status(404).json({ error: "Exhibition not found" });
+      }
+
+      const photo = exhibition.photos.id(req.params.photoId);
+      if (!photo) {
+        return res.status(404).json({ error: "Photo not found" });
+      }
+
+      exhibition.photos.id(req.params.photoId).remove();
+      await exhibition.save();
+    } catch (error) {
+      res.status(500).json({ error: "Server error" });
+    }
+  }
+);
 
 // Create exhibition (admin only)
 router.post("/", auth, async (req: AuthRequest, res): Promise<any> => {
