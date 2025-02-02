@@ -39,7 +39,6 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({
         const { data } = await axios.get(
           `/api/exhibitions/${exhibitionId}/approval`
         );
-        console.log(`Approval Requests: ${exhibitionTitle}`, data);
         return data;
       },
       onSuccess: (data: Photo[]) => setApprovalRequests(data),

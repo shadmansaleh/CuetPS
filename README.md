@@ -2,15 +2,14 @@
 
 A place to share your sight with the world
 
-
-### Setup development environment
-
-#### Requirements:
+### Requirements:
 
 - NodeJS
 - MongoDB server
 
-#### Procedure:
+### Setup development environment
+
+#### Without docker:
 
 1. Clone the repo
 
@@ -26,10 +25,16 @@ npm run setup
 ```
 
 3. Configure setup (One-Time):
-   You'll need to fill out `backend/.env` and `frontend/.env.example` with your information.
+   You'll need to fill out `backend/.env` and `frontend/.env.local` with your information.
    Read the comments in those files to see what you need.
 
-4. Start server:
+4. Insert seed data in database (One-time):
+
+```sh
+npm run seed
+```
+
+5. Start server:
    This will run the react frontend in port 3000 and backend on port 5000.
    You can access the site with [localhost:3000](http://localhost:3000)
 
@@ -37,9 +42,34 @@ npm run setup
 npm run dev
 ```
 
+#### With docker
+
+1. Clone the repo
+
+```sh
+git clone https://github.com/shadmansaleh/Cuet-Photographic-Society
+```
+
+2. Run the docker image
+
+```sh
+docker compose up -d
+```
+
+4. Insert seed data in database (One-time):
+
+```sh
+npm run seed
+```
+
+5. Visit the website
+
+[http://localhost:8080](http://localhost:8080)
+
+
 ### Demo
 
-You can check it out at [deployment]().
+You can check it out at [deployment](https://cuet-ps-frontend-tau.vercel.app/).
 
 ### Screenshots
 
