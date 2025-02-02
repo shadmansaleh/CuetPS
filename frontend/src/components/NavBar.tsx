@@ -87,7 +87,7 @@ function NavBar() {
       cond: isSignedIn,
     },
   ];
-  const active = window.location.pathname;
+  const active = "/" + window.location.pathname.split("/")[1];
 
   return (
     <>
