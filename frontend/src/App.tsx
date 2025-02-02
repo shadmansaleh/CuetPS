@@ -59,9 +59,7 @@ function App() {
       element: <ProtectedRoute role={Role.ADMIN} />,
       children: [
         { index: true, element: <AdminPage /> },
-        { path: "create-exhibition", element: <CreateExhibition /> },
-        { path: "photo-table", element: <PhotoTable /> },
-        { path: "user-table", element: <UserTable /> },
+        { path: ":path", element: <AdminPage /> },
       ],
     },
 
