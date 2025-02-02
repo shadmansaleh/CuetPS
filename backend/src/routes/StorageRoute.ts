@@ -5,7 +5,7 @@ import {
   StorageUploadController,
   StorageGetController,
   StorageDeleteController,
-} from "../controller/StorageController";
+} from "../controllers/StorageController";
 
 const storage = Router();
 

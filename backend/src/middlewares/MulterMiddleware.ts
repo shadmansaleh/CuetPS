@@ -20,7 +20,7 @@ const secureStorageDisk = multer.diskStorage({
     cb(null, "./public/storage");
   },
   filename: function (_req: Request, file: Express.Multer.File, cb: any) {
-    const fname = `${uuidv4()}_${path.extname(file.originalname)}`;
+    const fname = `${uuidv4()}${path.extname(file.originalname)}`;
     cb(null, fname);
   },
 });
