@@ -2,7 +2,6 @@ import { useState } from "react";
 import MasonryGallery from "../../components/MasonryGallery";
 import type { Photo } from "../../types";
 import { useAuth } from "../../contexts/AuthContext";
-import PhotoUploadModal from "@/components/PhotoUploadModal";
 import { useQuery } from "react-query";
 import axios from "@/utils/axios";
 import Loading from "@/components/Loading";
@@ -43,7 +42,6 @@ export default function Profile() {
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">My Photos</h2>
         <MasonryGallery photos={photos} />
-        <PhotoUploadModal />
       </div>
     </div>
   );
