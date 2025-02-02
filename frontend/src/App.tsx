@@ -1,7 +1,5 @@
-// import { useContext } from "react";
-// import { AuthContext } from "./contexts/AuthProvider";
 import { Role, ProtectedRoute } from "./components/ProtectedRoute";
-import { useRoutes } from "react-router-dom";
+import { useRoutes, Navigate } from "react-router-dom";
 import useDarkMode from "./hooks/useDarkMode";
 
 // components
@@ -25,8 +23,7 @@ import { useAuth } from "./contexts/AuthContext";
 import Loading from "./components/Loading";
 
 function App() {
-  const [darkMode, setDarkMode] = useDarkMode();
-  if (darkMode) setDarkMode(false);
+  const [darkMode] = useDarkMode(); // No need to reset it
   const { loading: authLoading } = useAuth();
 
   const AppRoutes = useRoutes([
@@ -41,7 +38,7 @@ function App() {
         { path: "exhibitions/:id", element: <ExhibitionDetails /> },
         { path: "contact", element: <Contact /> },
         { path: "forgot_password", element: <ForgotPassword /> },
-        { path: "profile/:id", element: <Profile /> },
+        { path: "profile/:id", element: <Profile /> }, // Profile with ID
       ],
     },
     {
@@ -60,16 +57,18 @@ function App() {
         { path: ":path", element: <AdminPage /> },
       ],
     },
-
     {
       path: `${__BASE_URL__}/`,
       element: <ProtectedRoute role={Role.AUTH} />,
-      children: [{ path: "profile", element: <Profile /> }],
+      children: [
+        { path: "profile", element: <Navigate to="/profile/me" replace /> }, // Redirect `/profile` to `/profile/me`
+      ],
     },
     { path: "*", element: <NotFound404 /> },
   ]);
 
   if (authLoading) return <Loading />;
+
   return (
     <div className="bg-base-100">
       <NavBar />
