@@ -4,6 +4,7 @@ import { Heart } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import ImageModal from "./ImageModal";
 import type { Photo } from "../types";
+import { HeartFilled } from "@ant-design/icons";
 
 interface MasonryGalleryProps {
   photos: Photo[];
@@ -51,12 +52,16 @@ export default function MasonryGallery({
                   }}
                   className="absolute top-2 right-2 p-2 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 >
-                  <Heart className="h-5 w-5 text-red-500" />
+                  {photo.votes.find((u) => u == user._id) ? (
+                    <HeartFilled className="h-5 w-5 text-red-500" />
+                  ) : (
+                    <Heart className="h-5 w-5 text-red-500" />
+                  )}
                 </button>
               )}
               <div className="absolute bottom-0 left-0 right-0 p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <h3 className="text-lg font-semibold">{photo.title}</h3>
-                <p className="text-sm">{photo.votes} votes</p>
+                <p className="text-sm">{photo.votes.length} votes</p>
               </div>
             </div>
           </div>

@@ -19,7 +19,7 @@ export interface Photo {
   caption: string;
   image_url: string;
   user: string | User;
-  votes: number;
+  votes: string[];
   created_at: string;
 }
 

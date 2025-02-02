@@ -80,12 +80,35 @@ router.get("/:id/download", (async (req, res) => {
 // Vote for a photo
 router.post("/:id/vote", auth, (async (req: AuthRequest, res) => {
   try {
-    const photo = await Photo.findByIdAndUpdate(
-      req.params.id,
-      { $inc: { votes: 1 } },
-      { new: true }
-    );
-    res.json(photo);
+    const photo = await Photo.findById(req.params.id);
+    if (!photo) {
+      return res.status(404).json({ error: "Photo not found" });
+    }
+    if (photo?.votes.includes(req.user._id)) {
+      return res.status(400).json({ error: "Already voted" });
+    } else {
+      photo?.votes.push(req.user._id);
+    }
+    await photo.save();
+    res.status(200).json(photo);
+  } catch (error) {
+    res.status(400).json({ error: "Vote failed" });
+  }
+}) as RequestHandler);
+
+router.post("/:id/unvote", auth, (async (req: AuthRequest, res) => {
+  try {
+    const photo = await Photo.findById(req.params.id);
+    if (!photo) {
+      return res.status(404).json({ error: "Photo not found" });
+    }
+    if (photo?.votes.includes(req.user._id)) {
+      photo.votes = photo.votes.filter((id) => !id.equals(req.user._id));
+    } else {
+      return res.status(400).json({ error: "Not voted yet" });
+    }
+    photo.save();
+    res.status(200).json(photo);
   } catch (error) {
     res.status(400).json({ error: "Vote failed" });
   }

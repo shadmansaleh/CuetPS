@@ -4,9 +4,12 @@ import type { Photo } from "../../types";
 import axios from "@/utils/axios";
 import { useQuery } from "react-query";
 import Loading from "@/components/Loading";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Gallery() {
   const [photos, setPhotos] = useState<Photo[]>([]);
+
+  const { user } = useAuth();
 
   const photoQuery = useQuery(
     "gallery",
@@ -20,8 +23,22 @@ export default function Gallery() {
   );
 
   const handleVote = async (photoId: string) => {
-    // TODO: Implement voting
-    console.log("Voting for photo:", photoId);
+    const has_vote = !!photos
+      .find((photo) => photo._id == photoId)
+      ?.votes.find((u) => u == user?._id);
+
+    const res = await axios.post(
+      `/api/photos/${photoId}/${!has_vote ? "vote" : "unvote"}`
+    );
+    if (res.status == 200) {
+      const photo = res.data;
+      setPhotos((prevPhotos) => {
+        return prevPhotos.map((p) => {
+          if (p._id == photo._id) return photo;
+          return p;
+        });
+      });
+    }
   };
 
   if (photoQuery.isLoading) {

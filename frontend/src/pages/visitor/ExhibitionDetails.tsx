@@ -25,6 +25,34 @@ export default function ExhibitionDetails() {
     }
   );
 
+  const handleVote = async (photoId: string) => {
+    if (!exhibition) return;
+    try {
+      const has_vote = !!exhibition.photos
+        .find((photo) => photo._id == photoId)
+        ?.votes.find((u) => u == user?._id);
+
+      const res = await axios.post(
+        `/api/photos/${photoId}/${!has_vote ? "vote" : "unvote"}`
+      );
+      if (res.status == 200) {
+        const photo = res.data;
+        setExhibition((prevExhibition) => {
+          if (!prevExhibition) return prevExhibition;
+          return {
+            ...prevExhibition,
+            photos: prevExhibition.photos.map((p) => {
+              if (p._id == photo._id) return photo;
+              return p;
+            }),
+          };
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   if (exhibitionQuery.isLoading) {
     return <Loading />;
   }
@@ -50,7 +78,7 @@ export default function ExhibitionDetails() {
             </span>
           </div>
         </div>
-        <MasonryGallery photos={exhibition.photos} />
+        <MasonryGallery photos={exhibition.photos} onVote={handleVote} />
         {user && (
           <PhotoUploadModal
             className="absolute bottom-12 right-12"

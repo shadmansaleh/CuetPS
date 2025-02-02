@@ -13,10 +13,12 @@ const photoSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    votes: {
-      type: Number,
-      default: 0,
-    },
+    votes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
     timestamps: true,
