@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "@/utils/axios";
 import type { User } from "../types";
 import Cookies from "js-cookie";
+import { enqueueSnackbar } from "notistack";
 
 interface AuthContextType {
   user: User | null;
@@ -57,14 +58,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signUp = async (email: string, password: string, name: string) => {
     try {
       setLoading(true);
-      const response = await axios.post("/api/auth/register", {
+      const res = await axios.post("/api/auth/register", {
         email,
         password,
         name,
       });
-      const { user, token } = response.data;
-      Cookies.set("token", token, { path: "/", sameSite: "strict" });
-      setUser(user);
+      if (res.status === 201) {
+        const { user, token } = res.data;
+        Cookies.set("token", token, { path: "/", sameSite: "strict" });
+        setUser(user);
+      } else {
+        enqueueSnackbar(res.data.error, { variant: "error" });
+      }
     } catch (error) {
       throw error;
     } finally {

@@ -3,6 +3,7 @@ import { auth, AuthRequest } from "../middlewares/auth";
 import { Photo } from "../models/Photo";
 import { RequestHandler } from "express";
 import { getRandomK } from "../utils/utils";
+import User from "../models/User";
 
 const router = express.Router();
 

@@ -1,14 +1,33 @@
 import { useState } from "react";
 import MasonryGallery from "../../components/MasonryGallery";
-import type { Photo } from "../../types";
+import type { Photo, User } from "../../types";
 import { useAuth } from "../../contexts/AuthContext";
 import { useQuery } from "react-query";
 import axios from "@/utils/axios";
 import Loading from "@/components/Loading";
+import { useParams } from "react-router-dom";
 
 export default function Profile() {
-  const { user } = useAuth();
+  const { id } = useParams<{ id: string }>();
+  const { user: cur_user } = useAuth();
+
+  const [user, setUser] = useState<User | null>(
+    !id || id == "me" ? cur_user : null
+  );
+
   const [photos, setPhotos] = useState<Photo[]>([]);
+
+  const userQuery = useQuery(
+    ["user", id],
+    async () => {
+      const { data } = await axios.get(`/api/user/username/${id}`);
+      return data;
+    },
+    {
+      enabled: !!id && id != "me",
+      onSuccess: (data) => setUser(data),
+    }
+  );
 
   const photosQuery = useQuery(
     ["user-photos", user?._id],
@@ -23,9 +42,14 @@ export default function Profile() {
   );
 
   if (!user) {
-    return <div>Please log in to view your profile.</div>;
+    // user not found
+    return (
+      <div className="max-w-7xl min-h-dvh mx-auto px-4 py-8 text-2xl flex justify-center items-center">
+        <div>User not found</div>
+      </div>
+    );
   }
-  if (photosQuery.isLoading) {
+  if (userQuery.isLoading || photosQuery.isLoading) {
     return <Loading />;
   }
 

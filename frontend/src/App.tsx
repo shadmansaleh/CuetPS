@@ -41,6 +41,7 @@ function App() {
         { path: "exhibitions/:id", element: <ExhibitionDetails /> },
         { path: "contact", element: <Contact /> },
         { path: "forgot_password", element: <ForgotPassword /> },
+        { path: "profile/:id", element: <Profile /> },
       ],
     },
     {

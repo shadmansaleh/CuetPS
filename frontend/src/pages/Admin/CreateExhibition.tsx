@@ -49,7 +49,6 @@ const CreateExhibition: React.FC = () => {
         }
       }
     } catch (error: any) {
-      console.log(error);
       const errorMsg =
         error.response?.data?.message || "Failed to create exhibition.";
       console.error("Error creating exhibition:", errorMsg);
@@ -65,7 +64,6 @@ const CreateExhibition: React.FC = () => {
     accept: "image/*", // Only accept image files
     beforeUpload: (file: File) => {
       // Prevent auto-upload; manually handle it via FormData
-      console.log("File selected:", file);
       return false;
     },
   };

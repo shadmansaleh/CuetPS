@@ -30,7 +30,6 @@ const PhotoUploadModal = ({
   const handleUpload = async (e: any) => {
     e.preventDefault();
     if (selectedFile) {
-      console.log("Uploading:", selectedFile.name);
       const formData = new FormData();
       formData.append("file", selectedFile);
       formData.append("Content-Type", selectedFile.type);

@@ -16,6 +16,43 @@ router.get("/", async (req: Request, res: Response): Promise<void> => {
   }
 });
 
+router.get("/:id", async (req: Request, res: Response): Promise<void> => {
+  try {
+    const user = await User.findById(req.params.id).select(
+      "name email role createdAt"
+    );
+
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.get(
+  "/username/:username",
+  async (req: Request, res: Response): Promise<void> => {
+    try {
+      const user = await User.findOne({ name: req.params.username }).select(
+        "name email"
+      );
+
+      if (!user) {
+        res.status(404).json({ error: "User not found" });
+        return;
+      }
+
+      res.json(user);
+    } catch (error) {
+      res.status(500).json({ error: "Server error" });
+    }
+  }
+);
+
 // Delete a user
 router.delete(
   "/:id",

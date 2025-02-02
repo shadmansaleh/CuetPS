@@ -7,9 +7,14 @@ import { AuthRequest } from "../types/LocalTypes";
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
-router.post("/register", async (req, res) => {
+router.post("/register", async (req, res): Promise<any> => {
   try {
     const { name, email, password } = req.body;
+    const oldUser =
+      (await User.findOne({ email })) || (await User.findOne({ name }));
+    if (oldUser) {
+      return res.status(400).json({ error: "User already exists" });
+    }
     const user = new User({ name, email, password });
     await user.save();
 
