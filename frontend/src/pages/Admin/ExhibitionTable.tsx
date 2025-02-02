@@ -1,6 +1,6 @@
 import { Table, Button, message, Typography } from "antd";
 import { useState } from "react";
-import axios from "@/utils/axios"; // Import Axios for API calls
+import axios from "@/utils/axios";
 import styles from "./AdminPage.module.css";
 import { Photo } from "@/types";
 import { useMutation, useQueries, useQueryClient } from "react-query";
@@ -60,13 +60,15 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({
       return data;
     },
     {
-      onSuccess: () => {
+      onSuccess: (_, args) => {
+        const { accept } = args;
+
         queryClient.invalidateQueries(["exhibition-photos", exhibitionId]);
         queryClient.invalidateQueries(["photo-approval", exhibitionId]);
-        message.success("Photo approved successfully");
+        message.success(`Photo ${accept ? "approved" : "rejected"}`);
       },
-      onError: () => {
-        message.error("Failed to approve photo");
+      onError: (_, args) => {
+        message.error(`Failed to ${args.accept ? "approve" : "reject"} photo`);
       },
     }
   );
@@ -118,7 +120,7 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({
             <>
               <Button
                 type="link"
-                className="btn btn-sm btn-success text-white"
+                className="btn btn-sm btn-outline btn-success text-white"
                 onClick={() =>
                   approvalAction.mutate({ photoId: photo._id, accept: true })
                 }
@@ -127,7 +129,7 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({
               </Button>
               <Button
                 type="link"
-                className="btn btn-sm btn-error text-white"
+                className="btn btn-sm btn-outline btn-error text-white"
                 onClick={() =>
                   approvalAction.mutate({ photoId: photo._id, accept: false })
                 }
@@ -139,14 +141,14 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({
           <>
             <Button
               type="link"
-              className="btn btn-sm btn-info text-white"
+              className="btn btn-sm btn-outline btn-info text-white"
               onClick={() => window.open(photo.image_url, "_blank")}
             >
               View
             </Button>
             <Button
               type="link"
-              className="btn btn-sm btn-info text-white"
+              className="btn btn-sm btn-outline btn-info text-white"
               onClick={() => downloadPhoto(photo._id, photo.title)}
             >
               Download

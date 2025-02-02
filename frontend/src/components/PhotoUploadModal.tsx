@@ -51,7 +51,7 @@ const PhotoUploadModal = ({
               image_url: upload_response.data,
             }
           );
-          if (submit_response.status === 200) {
+          if (submit_response.status === 201) {
             enqueueSnackbar("Photo submitted", {
               variant: "success",
             });

@@ -18,7 +18,7 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res): Promise<any> => {
   try {
-    const exhibition = await Exhibition.findById(req.params.id).populate({
+    let exhibition = await Exhibition.findById(req.params.id).populate({
       path: "photos",
       match: { selected: true },
       populate: { path: "image" },
@@ -26,6 +26,7 @@ router.get("/:id", async (req, res): Promise<any> => {
     if (!exhibition) {
       return res.status(404).json({ error: "Exhibition not found" });
     }
+    exhibition = exhibition.toObject();
     exhibition.photos = exhibition.photos
       .filter((photo: any) => photo.selected)
       .map((photo: any) => photo.image);
@@ -85,7 +86,7 @@ router.get(
   }
 );
 
-router.get(
+router.post(
   "/:id/approve/:photoId",
   authAdmin,
   async (req: AuthRequest, res: Response): Promise<any> => {
@@ -95,7 +96,9 @@ router.get(
         return res.status(404).json({ error: "Exhibition not found" });
       }
 
-      const photo = exhibition.photos.id(req.params.photoId);
+      const photo = exhibition.photos.find(
+        (photo: any) => photo.image.toString() === req.params.photoId
+      );
       if (!photo) {
         return res.status(404).json({ error: "Photo not found" });
       }
@@ -109,7 +112,7 @@ router.get(
   }
 );
 
-router.get(
+router.post(
   "/:id/reject/:photoId",
   authAdmin,
   async (req: AuthRequest, res: Response): Promise<any> => {
@@ -119,14 +122,18 @@ router.get(
         return res.status(404).json({ error: "Exhibition not found" });
       }
 
-      const photo = exhibition.photos.id(req.params.photoId);
+      const photo = exhibition.photos.find(
+        (photo: any) => photo.image.toString() === req.params.photoId
+      );
       if (!photo) {
         return res.status(404).json({ error: "Photo not found" });
       }
 
-      exhibition.photos.id(req.params.photoId).remove();
+      exhibition.photos.pull({ _id: photo._id });
       await exhibition.save();
+      res.status(200);
     } catch (error) {
+      console.error(error);
       res.status(500).json({ error: "Server error" });
     }
   }
@@ -158,7 +165,7 @@ router.post(
         return res.status(404).json({ error: "Exhibition not found" });
       }
 
-      const photo = new Photo({ ...req.body, user: req.user._id });
+      let photo = new Photo({ ...req.body, user: req.user._id });
       if (!photo) {
         throw new Error("Failed to create photo object");
       }
@@ -166,12 +173,12 @@ router.post(
       await photo.save();
 
       exhibition.photos.push({
-        photo: photo,
+        image: photo._id,
         selected: false,
       });
 
       await exhibition.save();
-      res.json(exhibition);
+      res.status(201).json(photo);
     } catch (error) {
       res.status(400).json({ error: "Submission failed" });
     }
