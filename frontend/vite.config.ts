@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   return {
     server: { port: 3000 },
-    preview: { port: 3000 },
+    preview: { port: 8080 },
     plugins: [react()],
     base: env.BASE_URL || "",
     resolve: {
