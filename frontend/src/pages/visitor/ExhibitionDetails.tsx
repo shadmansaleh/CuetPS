@@ -64,9 +64,21 @@ export default function ExhibitionDetails() {
     <div>
       <div className="max-w-7xl min-h-dvh mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            {exhibition.title}
-          </h1>
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+              {exhibition.title}
+            </h1>
+            {user && (
+              <PhotoUploadModal
+                className="sticky bottom-12 right-12"
+                exhibitionId={id as string}
+              >
+                <button className="btn btn-outline btn-md btn-primary cursor-pointer">
+                  Upload
+                </button>
+              </PhotoUploadModal>
+            )}
+          </div>
           <p className="text-gray-600 mb-4">{exhibition.description}</p>
           <div className="flex space-x-4 text-sm text-gray-500">
             <span>Status: {exhibition.status}</span>
@@ -79,14 +91,6 @@ export default function ExhibitionDetails() {
           </div>
         </div>
         <MasonryGallery photos={exhibition.photos} onVote={handleVote} />
-        {user && (
-          <PhotoUploadModal
-            className="absolute bottom-12 right-12"
-            exhibitionId={id as string}
-          >
-            <IoMdCloudUpload className="text-blue-600 cursor-pointer h-16 w-16" />
-          </PhotoUploadModal>
-        )}
       </div>
     </div>
   );

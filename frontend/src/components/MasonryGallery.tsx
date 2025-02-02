@@ -53,7 +53,10 @@ export default function MasonryGallery({
                   className="absolute top-2 right-2 p-2 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 >
                   {photo.votes.find((u) => u == user._id) ? (
-                    <HeartFilled className="h-5 w-5 text-red-500" />
+                    <Heart
+                      fill="currentColor"
+                      className="h-5 w-5 text-red-500"
+                    />
                   ) : (
                     <Heart className="h-5 w-5 text-red-500" />
                   )}
