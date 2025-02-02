@@ -21,9 +21,6 @@ import Gallery from "./pages/visitor/Gallery";
 import ExhibitionDetails from "./pages/visitor/ExhibitionDetails";
 import Profile from "./pages/visitor/Profile";
 import AdminPage from "./pages/Admin/AdminPage";
-import CreateExhibition from "./pages/Admin/CreateExhibition";
-import PhotoTable from "./pages/Admin/PhotoTable";
-import UserTable from "./pages/Admin/UserTable";
 import { useAuth } from "./contexts/AuthContext";
 import Loading from "./components/Loading";
 
