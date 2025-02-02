@@ -4,7 +4,6 @@ import MasonryGallery from "../../components/MasonryGallery";
 import type { Exhibition } from "../../types";
 import PhotoUploadModal from "@/components/PhotoUploadModal";
 import { useAuth } from "@/contexts/AuthContext";
-import { IoMdCloudUpload } from "react-icons/io";
 import Loading from "@/components/Loading";
 import { useQuery } from "react-query";
 import axios from "@/utils/axios";

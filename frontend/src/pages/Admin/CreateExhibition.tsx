@@ -62,7 +62,7 @@ const CreateExhibition: React.FC = () => {
     listType: "picture", // To display uploaded images as thumbnails
     maxCount: 1, // Limit to one file
     accept: "image/*", // Only accept image files
-    beforeUpload: (file: File) => {
+    beforeUpload: () => {
       // Prevent auto-upload; manually handle it via FormData
       return false;
     },

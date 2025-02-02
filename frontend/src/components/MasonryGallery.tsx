@@ -4,7 +4,6 @@ import { Heart } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import ImageModal from "./ImageModal";
 import type { Photo } from "../types";
-import { HeartFilled } from "@ant-design/icons";
 
 interface MasonryGalleryProps {
   photos: Photo[];
