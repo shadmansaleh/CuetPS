@@ -17,8 +17,11 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - DATABASE_URL=mongodb://mongo:27017/CuetPS
-      - ORIGIN_URL=http://frontend:8080
+      - DATABASE_URL=mongodb://mongo:27017/CUETPS
+      - ORIGIN_URL=http://localhost:8080
+      - BACKEND_URL=http://localhost:5000
+      - PORT=5000
+      - JWT_ACCESS_TOKEN_SECRET=0269d46d4d6ac194d9ae3e5833df792ddf0084cb73076bc6a0d5131afc5bab0446aaa6e25eaf82b3e57039780abb7ef61da98eb711c91eca1f57e83a7bcd3655
     depends_on:
       - mongo
   frontend:
