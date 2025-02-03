@@ -9,6 +9,7 @@ import RateLimiter from "./middlewares/RateLimiter";
 import LogRequest from "./middlewares/LogRequests";
 import path from "path";
 import fs from "fs";
+import contactRoutes from "./routes/contact";
 
 // Routes
 import authRoutes from "./routes/auth";
@@ -48,6 +49,7 @@ app.use("/api/photos", photoRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/exhibitions", exhibitionRoutes);
 app.use("/api/storage", StorageRoute);
+app.use("/api/contact", contactRoutes);
 
 // Catch-all for undefined routes
 app.use((req: Request, res: Response) => {

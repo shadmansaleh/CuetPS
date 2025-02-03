@@ -72,6 +72,11 @@ function NavBar() {
       cond: !isAdmin,
     },
     {
+      name: "Contact us",
+      link: "/contact",
+      cond: !isAdmin,
+    },
+    {
       name: "Profile",
       link: "/profile",
       cond: isSignedIn,

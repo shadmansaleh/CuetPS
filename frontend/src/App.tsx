@@ -10,7 +10,7 @@ import Footer from "./components/Footer";
 import LandingPage from "./pages/visitor/LandingPage";
 import Login from "./pages/visitor/LoginPage";
 import AboutUs from "./pages/visitor/AboutUsPage";
-import Contact from "./pages/visitor/ContactPage";
+import ContactPage from "./pages/visitor/ContactPage";
 import SignUp from "./pages/visitor/SignUpPage";
 import ForgotPassword from "./pages/visitor/ForgotPasswordPage";
 import NotFound404 from "./pages/Common/NotFound404";
@@ -36,7 +36,7 @@ function App() {
         { path: "gallery", element: <Gallery /> },
         { path: "exhibitions", element: <Exhibition /> },
         { path: "exhibitions/:id", element: <ExhibitionDetails /> },
-        { path: "contact", element: <Contact /> },
+        { path: "contact", element: <ContactPage /> },
         { path: "forgot_password", element: <ForgotPassword /> },
         { path: "profile/:id", element: <Profile /> }, // Profile with ID
       ],
