@@ -8,6 +8,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { user, signIn } = useAuth();
 
@@ -25,13 +26,13 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8  ">
+      <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <h2 className="text-4xl font-bold text-gray-800">Welcome Back</h2>
-          <p className="mt-2 text-gray-800 ">Sign in to your account</p>
+          <p className="mt-2 text-gray-800">Sign in to your account</p>
         </div>
         <form
-          className="bg-white shadow-lg rounded-xl p-8 space-y-6 "
+          className="bg-white shadow-lg rounded-xl p-8 space-y-6"
           onSubmit={handleSubmit}
         >
           {error && (
@@ -60,19 +61,30 @@ export default function Login() {
               <label htmlFor="password" className="label">
                 <span className="label-text">Password</span>
               </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={password}
-                onChange={(e: any) => setPassword(e.target.value)}
-                className="input input-bordered w-full"
-                placeholder="Password"
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  required
+                  value={password}
+                  onChange={(e: any) => setPassword(e.target.value)}
+                  className="input input-bordered w-full"
+                  placeholder="Password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3 text-gray-600"
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
             </div>
           </div>
+          
+
           <div className="flex justify-between items-center">
             <p className="text-sm">
               Don’t have an account?{" "}
@@ -81,6 +93,7 @@ export default function Login() {
               </Link>
             </p>
           </div>
+
           <div>
             <button type="submit" className="btn btn-primary w-full">
               Sign in

@@ -9,6 +9,7 @@ export default function Register() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { signUp } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,7 +47,7 @@ export default function Register() {
                 type="text"
                 required
                 value={name}
-                onChange={(e: any) => setName(e.target.value)}
+                onChange={(e) => setName(e.target.value)}
                 className="input input-bordered w-full"
                 placeholder="Enter your full name"
               />
@@ -62,7 +63,7 @@ export default function Register() {
                 autoComplete="email"
                 required
                 value={email}
-                onChange={(e: any) => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
                 className="input input-bordered w-full"
                 placeholder="Enter your email"
               />
@@ -74,14 +75,26 @@ export default function Register() {
               <input
                 id="password"
                 name="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 autoComplete="new-password"
                 required
                 value={password}
-                onChange={(e: any) => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
                 className="input input-bordered w-full"
                 placeholder="Enter a secure password"
               />
+            </div>
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="show-password"
+                className="checkbox"
+                checked={showPassword}
+                onChange={() => setShowPassword(!showPassword)}
+              />
+              <label htmlFor="show-password" className="text-sm">
+                Show Password
+              </label>
             </div>
           </div>
           <div>
