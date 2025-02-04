@@ -83,7 +83,12 @@ export default function Login() {
               </div>
             </div>
           </div>
-          
+          <div className="flex justify-between items-center">
+            <div></div>
+            <Link to="/forgot-password" className="text-sm text-blue-600 hover:underline">
+              Forgot Password?
+            </Link>
+          </div>
 
           <div className="flex justify-between items-center">
             <p className="text-sm">
