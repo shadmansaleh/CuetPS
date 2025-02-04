@@ -13,6 +13,7 @@ import AboutUs from "./pages/visitor/AboutUsPage";
 import ContactPage from "./pages/visitor/ContactPage";
 import SignUp from "./pages/visitor/SignUpPage";
 import ForgotPassword from "./pages/visitor/ForgotPasswordPage";
+import ResetPassword from "./pages/visitor/ResetPasswordPage";
 import NotFound404 from "./pages/Common/NotFound404";
 import Exhibition from "./pages/visitor/ExhibitionPage";
 import Gallery from "./pages/visitor/Gallery";
@@ -37,7 +38,8 @@ function App() {
         { path: "exhibitions", element: <Exhibition /> },
         { path: "exhibitions/:id", element: <ExhibitionDetails /> },
         { path: "contact", element: <ContactPage /> },
-        { path: "forgot_password", element: <ForgotPassword /> },
+        { path: "forgot-password", element: <ForgotPassword /> },
+        { path: "reset-password/:id/:token", element: <ResetPassword /> },
         { path: "profile/:id", element: <Profile /> }, // Profile with ID
       ],
     },
