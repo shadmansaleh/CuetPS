@@ -2,7 +2,9 @@ import { Link } from "react-router-dom";
 import { Camera, Image, Award } from "lucide-react";
 import { motion } from "framer-motion";
 
+
 export default function LandingPage() {
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section with Full Background Image */}
@@ -104,7 +106,44 @@ export default function LandingPage() {
       </div>
 
       {/* Contact Us Section */}
-      
+      <div className="bg-gray-50 py-16 my-24">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl font-bold text-gray-800 mb-4">Still got questions?</h2>
+          </motion.div>
+
+          <motion.p
+            className="text-gray-600 mb-6"
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1, delay: 0.01 }}
+            viewport={{ once: true }}
+          >
+            You can always reach out to us, and we’ll be happy to help!
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.02 }}
+            viewport={{ once: true }}
+          >
+            <Link
+              to="/contact"
+              className="px-8 py-3 text-pink-400 border-2 border-pink-400 rounded-lg hover:bg-pink-400 hover:text-white transition-colors"
+            >
+              Contact Us
+            </Link>
+          </motion.div>
+        </div>
+      </div>
+
+
     </div>
   );
 }
