@@ -61,7 +61,7 @@ export default function ExhibitionDetails() {
   }
 
   const isPastDeadline = new Date() > new Date(exhibition.end_date);
-
+  const isNotbegin = new Date() < new Date(exhibition.start_date);
   return (
     <div>
       <div className="max-w-7xl min-h-dvh mx-auto px-4 py-8">
@@ -70,7 +70,7 @@ export default function ExhibitionDetails() {
             <h1 className="text-3xl font-bold text-gray-900 mb-4">
               {exhibition.title}
             </h1>
-            {user && !isPastDeadline ? (
+            {user && !isPastDeadline && !isNotbegin ? (
               <PhotoUploadModal
                 className="sticky bottom-12 right-12"
                 exhibitionId={id as string}
@@ -80,9 +80,12 @@ export default function ExhibitionDetails() {
                 </button>
               </PhotoUploadModal>
             ) : (
-              <p className="text-red-500 font-medium">
+              isPastDeadline ? (<p className="text-red-500 font-medium">
                 We are no longer accepting photo submissions.
-              </p>
+              </p>) : (<p className="text-grey-500 font-medium">
+                Has not started yet
+              </p>)
+
             )}
           </div>
           <p className="text-gray-600 mb-4">{exhibition.description}</p>
