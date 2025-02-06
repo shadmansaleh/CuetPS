@@ -59,6 +59,9 @@ export default function ExhibitionDetails() {
   if (!exhibition) {
     return <div>Exhibition not found</div>;
   }
+
+  const isPastDeadline = new Date() > new Date(exhibition.end_date);
+
   return (
     <div>
       <div className="max-w-7xl min-h-dvh mx-auto px-4 py-8">
@@ -67,7 +70,7 @@ export default function ExhibitionDetails() {
             <h1 className="text-3xl font-bold text-gray-900 mb-4">
               {exhibition.title}
             </h1>
-            {user && (
+            {user && !isPastDeadline ? (
               <PhotoUploadModal
                 className="sticky bottom-12 right-12"
                 exhibitionId={id as string}
@@ -76,6 +79,10 @@ export default function ExhibitionDetails() {
                   Upload
                 </button>
               </PhotoUploadModal>
+            ) : (
+              <p className="text-red-500 font-medium">
+                We are no longer accepting photo submissions.
+              </p>
             )}
           </div>
           <p className="text-gray-600 mb-4">{exhibition.description}</p>
