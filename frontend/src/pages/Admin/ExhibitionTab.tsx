@@ -1,4 +1,4 @@
-import { Button, Modal, Input } from "antd";
+import { Button, Modal, Input, Select } from "antd";
 import { useState } from "react";
 import CreateExhibition from "./CreateExhibition";
 import ExhibitionTable from "./ExhibitionTable";
@@ -8,10 +8,12 @@ import Loading from "@/components/Loading";
 import { Exhibition } from "@/types";
 
 const { Search } = Input;
+const { Option } = Select;
 
 function ExhibitionTab() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [filter, setFilter] = useState("all");
 
   const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
   const exhibitionQuery = useQuery(
@@ -35,8 +37,19 @@ function ExhibitionTab() {
     setIsModalVisible(false);
   };
 
+  const getFilteredExhibitions = () => {
+    const now = new Date();
+    return exhibitions.filter((exhibition) => {
+      const startDate = new Date(exhibition.start_date);
+      const endDate = new Date(exhibition.end_date);
+      if (filter === "upcoming") return startDate > now;
+      if (filter === "ongoing") return startDate <= now && endDate >= now;
+      if (filter === "past") return endDate < now;
+      return true; // "all" case
+    });
+  };
   // Filter exhibitions based on search query
-  const filteredExhibitions = exhibitions.filter((exhibition) =>
+  const filteredExhibitions = getFilteredExhibitions().filter((exhibition) =>
     exhibition.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -49,13 +62,19 @@ function ExhibitionTab() {
           placeholder="Search exhibition..."
           allowClear
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-1/2"
+          className="w-1/3"
         />
-        <Button
-          type="primary"
-          onClick={handleCreateExhibitionClick}
-          className="ml-auto"
+        <Select
+          defaultValue="all"
+          onChange={setFilter}
+          className="w-1/4 ml-2"
         >
+          <Option value="all">All</Option>
+          <Option value="upcoming">Upcoming</Option>
+          <Option value="ongoing">Ongoing</Option>
+          <Option value="past">Past</Option>
+        </Select>
+        <Button type="primary" onClick={handleCreateExhibitionClick} className="ml-auto">
           Create Exhibition
         </Button>
       </div>
