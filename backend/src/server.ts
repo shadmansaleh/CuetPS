@@ -7,9 +7,9 @@ import cookieParser from "cookie-parser";
 import ErrorHandler from "./middlewares/ErrorHandler";
 import RateLimiter from "./middlewares/RateLimiter";
 import LogRequest from "./middlewares/LogRequests";
-import path from "path";
-import fs from "fs";
 import contactRoutes from "./routes/contact";
+import { ensureDirExists } from "./utils/fs";
+import path from "path";
 
 // Routes
 import authRoutes from "./routes/auth";
@@ -30,10 +30,8 @@ app.use(express.json());
 app.use(LogRequest);
 
 // Ensure uploads directory exists
-const uploadDir = path.join(__dirname, "../uploads/profile_pictures");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+ensureDirExists(path.join(__dirname, "../uploads/profile_pictures"));
+ensureDirExists(path.join(__dirname, "../public/storage"));
 
 // Serve static files from uploads
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
