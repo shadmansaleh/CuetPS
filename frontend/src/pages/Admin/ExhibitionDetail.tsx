@@ -21,9 +21,11 @@ const ExhibitionDetail: React.FC = () => {
 
         form.setFieldsValue({
           title: data.title,
+          description: data.description,  // Change to lowercase 'description'
           startDate: dayjs(data.start_date),
           endDate: dayjs(data.end_date),
         });
+        
 
         setThumbnail(data.thumbnail_url);
         setPreviewImage(data.thumbnail_url);
@@ -42,6 +44,7 @@ const ExhibitionDetail: React.FC = () => {
       setLoading(true);
       await axios.put(`/api/exhibitions/${id}`, {
         title: values.title,
+        description: values.description,
         startDate: values.startDate.toISOString(),
         endDate: values.endDate.toISOString(),
         thumbnail,
@@ -83,6 +86,13 @@ const ExhibitionDetail: React.FC = () => {
         <Form form={form} layout="vertical" onFinish={handleSave}>
           <Form.Item name="title" label="Exhibition Title" rules={[{ required: true, message: "Please enter the title" }]}>
             <Input placeholder="Enter title" />
+          </Form.Item>
+          <Form.Item name="description" label="Exhibition Description" rules={[{ required: true, message: "Please enter the description" }]}>
+            <Input.TextArea style={{
+              padding: "12px",
+              fontSize: "16px",
+              borderRadius: "8px",
+            }} placeholder="Enter description" />
           </Form.Item>
 
           <Form.Item name="startDate" label="Start Date" rules={[{ required: true, message: "Please select a start date" }]}>
@@ -134,8 +144,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   card: {
     width: "600px",
-    backdropFilter: "blur(10px)", 
-    background: "rgba(255, 255, 255, 0.2)", 
+    backdropFilter: "blur(10px)",
+    background: "rgba(255, 255, 255, 0.2)",
     borderRadius: "15px",
     boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
     padding: "20px",

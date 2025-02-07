@@ -28,14 +28,10 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Update exhibition details (title, dates, thumbnail)
+// Update exhibition details (title, descriptions, dates, thumbnail)
 router.put("/:id", authAdmin, async (req: AuthRequest, res: Response): Promise<any> => {
-  console.log("Headers:", req.headers); // ✅ Check if Content-Type is set
-  console.log("Raw Body:", req.body); // ✅ Debugging incoming request
-
   try {
-    const { title, startDate, endDate, thumbnail } = req.body;
-    console.log("Received Data:", { title, startDate, endDate, thumbnail }); // ✅ Log parsed data
+    const { title, description, startDate, endDate, thumbnail } = req.body;
 
     const exhibition = await Exhibition.findById(req.params.id);
     if (!exhibition) {
@@ -43,6 +39,7 @@ router.put("/:id", authAdmin, async (req: AuthRequest, res: Response): Promise<a
     }
 
     exhibition.title = title;
+    exhibition.description = description;
     exhibition.start_date = new Date(startDate);
     exhibition.end_date = new Date(endDate);
     if (thumbnail) exhibition.thumbnail_url = thumbnail;
@@ -54,6 +51,7 @@ router.put("/:id", authAdmin, async (req: AuthRequest, res: Response): Promise<a
     res.status(500).json({ error: "Server error" });
   }
 });
+
 
 
 // Upload exhibition thumbnail
