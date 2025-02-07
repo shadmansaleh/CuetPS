@@ -1,8 +1,9 @@
-import { Table, Button, message, Typography } from "antd";
+import { Table, Button, message, Typography, Menu, Dropdown } from "antd";
 import { useState } from "react";
 import axios from "@/utils/axios";
 import styles from "./AdminPage.module.css";
 import { Photo } from "@/types";
+import { useNavigate } from "react-router-dom";
 import { useMutation, useQueries, useQueryClient } from "react-query";
 
 const { Title } = Typography;
@@ -22,6 +23,7 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({
 
   const queryClient = useQueryClient();
 
+  const navigate = useNavigate();
   const queries = useQueries([
     {
       queryKey: ["exhibition-photos", exhibitionId],
@@ -52,8 +54,7 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({
   const approvalAction = useMutation(
     async ({ photoId, accept }: { photoId: string; accept: boolean }) => {
       const { data } = await axios.post(
-        `/api/exhibitions/${exhibitionId}/${
-          accept ? "approve" : "reject"
+        `/api/exhibitions/${exhibitionId}/${accept ? "approve" : "reject"
         }/${photoId}`
       );
       return data;
@@ -71,7 +72,23 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({
       },
     }
   );
+  const handleMenuClick = ({ key }: { key: string }) => {
+    if (key === "viewDetails") {
+      navigate(`/admin/exhibitions/${exhibitionId}`);
+    } else if (key === "seeAllPhotos") {
+      navigate(`/admin/exhibitions/${exhibitionId}`);
+    }
+  };
 
+  const menu = (
+    <Menu
+      onClick={handleMenuClick}
+      items={[
+        { label: "View Details", key: "viewDetails" },
+        { label: "See All Photos", key: "seeAllPhotos" },
+      ]}
+    />
+  );
   const downloadPhoto = (id: string, title: string) => {
     try {
       const link = document.createElement("a");
@@ -160,7 +177,32 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({
 
   return (
     <div className={styles.tableContainer}>
-      <Title level={3}>{exhibitionTitle}</Title>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "10px",
+        }}
+      >
+        <Title level={3} style={{ margin: 0 }}>
+          {exhibitionTitle}
+        </Title>
+        <Dropdown overlay={menu} trigger={["click"]}>
+          <Button
+            type="text"
+            style={{
+              fontSize: "18px",
+              padding: "0 8px",
+              lineHeight: "1",
+              cursor: "pointer",
+            }}
+          >
+            ...
+          </Button>
+        </Dropdown>
+      </div>
+
       {approvalRequests.length > 0 && (
         <>
           <Title level={4}>New Submissions</Title>
