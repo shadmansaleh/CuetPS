@@ -1,6 +1,6 @@
 import { Role, ProtectedRoute } from "./components/ProtectedRoute";
 import { useRoutes, Navigate } from "react-router-dom";
-import useDarkMode from "./hooks/useDarkMode";
+// import useDarkMode from "./hooks/useDarkMode";
 
 // components
 import NavBar from "./components/NavBar";
@@ -26,7 +26,7 @@ import { useAuth } from "./contexts/AuthContext";
 import Loading from "./components/Loading";
 
 function App() {
-  const [darkMode] = useDarkMode(); // No need to reset it
+  // const [darkMode] = useDarkMode(); // No need to reset it
   const { loading: authLoading } = useAuth();
 
   const AppRoutes = useRoutes([
