@@ -70,23 +70,23 @@ export default function ExhibitionDetails() {
             <h1 className="text-3xl font-bold text-gray-900 mb-4">
               {exhibition.title}
             </h1>
-            {user && !isPastDeadline && !isNotbegin ? (
-              <PhotoUploadModal
-                className="sticky bottom-12 right-12"
-                exhibitionId={id as string}
-              >
-                <button className="btn btn-outline btn-md btn-primary cursor-pointer">
-                  Upload
-                </button>
-              </PhotoUploadModal>
-            ) : (
-              isPastDeadline ? (<p className="text-red-500 font-medium">
-                We are no longer accepting photo submissions.
-              </p>) : (<p className="text-grey-500 font-medium">
-                Has not started yet
-              </p>)
-
-            )}
+            {user &&
+              (!isPastDeadline && !isNotbegin ? (
+                <PhotoUploadModal
+                  className="sticky bottom-12 right-12"
+                  exhibitionId={id as string}
+                >
+                  <button className="btn btn-outline btn-md btn-primary cursor-pointer">
+                    Upload
+                  </button>
+                </PhotoUploadModal>
+              ) : isPastDeadline ? (
+                <p className="text-red-500 font-medium">
+                  We are no longer accepting photo submissions.
+                </p>
+              ) : (
+                <p className="text-grey-500 font-medium">Has not started yet</p>
+              ))}
           </div>
           <p className="text-gray-600 mb-4">{exhibition.description}</p>
           <div className="flex space-x-4 text-sm text-gray-500">
