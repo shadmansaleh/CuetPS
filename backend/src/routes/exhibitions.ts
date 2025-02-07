@@ -3,6 +3,9 @@ import { auth, authAdmin, AuthRequest } from "../middlewares/auth";
 import { Exhibition } from "../models/Exhibition";
 import { populate } from "dotenv";
 import Photo from "../models/Photo";
+import multer from "multer";
+import path from "path";
+
 
 const router = express.Router();
 
@@ -15,6 +18,65 @@ router.get("/", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
+
+// Multer setup for image uploads
+const storage = multer.diskStorage({
+  destination: "uploads/",
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}${path.extname(file.originalname)}`);
+  },
+});
+const upload = multer({ storage });
+
+// Update exhibition details (title, dates, thumbnail)
+router.put("/:id", authAdmin, async (req: AuthRequest, res: Response): Promise<any> => {
+  console.log("Headers:", req.headers); // ✅ Check if Content-Type is set
+  console.log("Raw Body:", req.body); // ✅ Debugging incoming request
+
+  try {
+    const { title, startDate, endDate, thumbnail } = req.body;
+    console.log("Received Data:", { title, startDate, endDate, thumbnail }); // ✅ Log parsed data
+
+    const exhibition = await Exhibition.findById(req.params.id);
+    if (!exhibition) {
+      return res.status(404).json({ error: "Exhibition not found" });
+    }
+
+    exhibition.title = title;
+    exhibition.start_date = new Date(startDate);
+    exhibition.end_date = new Date(endDate);
+    if (thumbnail) exhibition.thumbnail_url = thumbnail;
+
+    await exhibition.save();
+    res.json({ message: "Exhibition updated successfully", exhibition });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+
+// Upload exhibition thumbnail
+router.post(
+  "/:id/upload-thumbnail",
+  authAdmin,
+  upload.single("thumbnail"),
+  async (req: AuthRequest, res: Response): Promise<any> => {
+    try {
+      const exhibition = await Exhibition.findById(req.params.id);
+      if (!exhibition) {
+        return res.status(404).json({ error: "Exhibition not found" });
+      }
+
+      exhibition.thumbnail_url = `/uploads/${req.file?.filename}`;
+      await exhibition.save();
+
+      res.json({ message: "Thumbnail uploaded successfully", url: exhibition.thumbnail_url });
+    } catch (error) {
+      res.status(500).json({ error: "Server error" });
+    }
+  }
+);
 
 router.get("/:id", async (req, res): Promise<any> => {
   try {
