@@ -21,8 +21,8 @@ const ExhibitionDetail: React.FC = () => {
 
         form.setFieldsValue({
           title: data.title,
-          startDate: dayjs(data.startDate),
-          endDate: dayjs(data.endDate),
+          startDate: dayjs(data.start_date),
+          endDate: dayjs(data.end_date),
         });
 
         setThumbnail(data.thumbnail_url);
