@@ -76,9 +76,10 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({
     if (key === "viewDetails") {
       navigate(`/admin/exhibitions/${exhibitionId}`);
     } else if (key === "seeAllPhotos") {
-      navigate(`/admin/exhibitions/${exhibitionId}`);
+      navigate(`/admin/exhibitions/${exhibitionId}/photos`);
     }
   };
+  
 
   const menu = (
     <Menu
