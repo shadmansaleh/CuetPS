@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import MasonryGallery from "../../components/MasonryGallery";
 import type { Photo, User } from "../../types";
 import { useAuth } from "../../contexts/AuthContext";
@@ -6,15 +6,20 @@ import { useQuery } from "react-query";
 import axios from "@/utils/axios";
 import Loading from "@/components/Loading";
 import { useParams } from "react-router-dom";
+import default_avater from "@/assets/default_avater.jpg";
 
 export default function Profile() {
   const { id } = useParams<{ id: string }>();
   const { user: cur_user } = useAuth();
 
-  const [user, setUser] = useState<User | null>(!id || id === "me" ? cur_user : null);
+  const [user, setUser] = useState<User | null>(
+    !id || id === "me" ? cur_user : null
+  );
+
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [preview, setPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const uploadButtonRef = useRef<HTMLInputElement>(null);
 
   const BASE_URL = "http://localhost:5000";
 
@@ -29,6 +34,8 @@ export default function Profile() {
       onSuccess: (data) => setUser(data),
     }
   );
+
+  const myProfile = cur_user !== null && user?._id === cur_user?._id;
 
   const photosQuery = useQuery(
     ["user-photos", user?._id],
@@ -70,11 +77,14 @@ export default function Profile() {
           prevUser
             ? {
                 ...prevUser,
-                avatar_url: `${BASE_URL}${data.avatar_url}?t=${new Date().getTime()}`,
+                avatar_url: `${BASE_URL}${
+                  data.avatar_url
+                }?t=${new Date().getTime()}`,
               }
             : null
         );
 
+        setSelectedFile(null);
         setPreview(null);
         await userQuery.refetch();
       } catch (error) {
@@ -95,25 +105,42 @@ export default function Profile() {
     return <Loading />;
   }
 
-  const avatarSrc = preview || (user.avatar_url ? `${BASE_URL}${user.avatar_url}` : "/default-avatar.png");
+  const avatarSrc =
+    preview ||
+    (user.avatar_url ? `${BASE_URL}${user.avatar_url}` : default_avater);
 
   return (
     <div className="max-w-7xl min-h-dvh mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-4">My Profile</h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-4">Profile</h1>
 
       <div className="bg-white rounded-lg shadow-md p-6 flex flex-col md:flex-row items-center md:items-start gap-6">
         <div className="flex flex-col items-center">
-          <img
-            src={avatarSrc}
-            alt="Profile Preview"
-            className="w-40 h-40 rounded-md object-cover border-4 border-gray-300 shadow-sm"
-          />
+          <div className="relative group">
+            <img
+              src={avatarSrc}
+              alt="Profile Preview"
+              className={`w-40 h-40 rounded-full object-cover border-4 border-gray-300 shadow-sm transition duration-300 ${
+                myProfile && "group-hover:brightness-75"
+              }`}
+            />
+            {myProfile && (
+              <div
+                className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity duration-300"
+                onClick={() => myProfile && uploadButtonRef.current?.click()}
+              >
+                <span className="text-white font-medium text-sm">
+                  Upload Photo
+                </span>
+              </div>
+            )}
+          </div>
 
           <input
             type="file"
             accept="image/*"
+            ref={uploadButtonRef}
             onChange={handleFileChange}
-            className="mt-4"
+            className="mt-4 hidden"
           />
 
           {selectedFile && (
@@ -121,7 +148,7 @@ export default function Profile() {
               onClick={handleProfilePictureUpload}
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mt-2"
             >
-              Upload
+              Save Profile Picture
             </button>
           )}
         </div>
@@ -132,10 +159,12 @@ export default function Profile() {
         </div>
       </div>
 
-      <div className="mt-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">My Photos</h2>
-        <MasonryGallery photos={photos} />
-      </div>
+      {user.role !== "admin" && (
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Photos</h2>
+          <MasonryGallery photos={photos} />
+        </div>
+      )}
     </div>
   );
 }

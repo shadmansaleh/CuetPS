@@ -40,7 +40,6 @@ function App() {
         { path: "contact", element: <ContactPage /> },
         { path: "forgot-password", element: <ForgotPassword /> },
         { path: "reset-password/:id/:token", element: <ResetPassword /> },
-        { path: "profile/:id", element: <Profile /> }, // Profile with ID
       ],
     },
     {
@@ -64,6 +63,7 @@ function App() {
       element: <ProtectedRoute role={Role.AUTH} />,
       children: [
         { path: "profile", element: <Navigate to="/profile/me" replace /> }, // Redirect `/profile` to `/profile/me`
+        { path: "profile/:id", element: <Profile /> }, // Profile with ID
       ],
     },
     { path: "*", element: <NotFound404 /> },
