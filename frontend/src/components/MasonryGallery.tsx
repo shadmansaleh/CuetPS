@@ -24,6 +24,21 @@ export default function MasonryGallery({
     500: 1,
   };
 
+  // Add some controlled randomness to aspect ratios to make layout more interesting
+  // but keep heights within reasonable bounds (0.5x to 1.5x of original)
+  // photos = photos.map((photo) => ({
+  //   ...photo,
+  //   aspect_ratio: photo.aspect_ratio * (0.75 + Math.random() * 0.5),
+  // }));
+
+  // Sort photos based on aspect ratio before rendering
+  const sortedPhotos = [...photos].sort((a, b) => {
+    const heightA = Math.round(100 / a.aspect_ratio);
+    const heightB = Math.round(100 / b.aspect_ratio);
+    return heightA - heightB;
+  });
+  photos = sortedPhotos;
+
   return (
     <>
       <Masonry

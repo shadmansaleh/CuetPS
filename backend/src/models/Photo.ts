@@ -16,6 +16,10 @@ const photoSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    aspect_ratio: {
+      type: Number,
+      default: 1,
+    },
     votes: [
       {
         type: mongoose.Schema.Types.ObjectId,

@@ -1,5 +1,6 @@
 import express from "express";
-import { auth, AuthRequest } from "../middlewares/auth";
+import { auth } from "../middlewares/auth";
+import { AuthRequest } from "../types/LocalTypes";
 import { Photo } from "../models/Photo";
 import { RequestHandler } from "express";
 import { getRandomK } from "../utils/utils";
@@ -34,7 +35,7 @@ router.post("/upload", auth, StorageUpload, (async (req: AuthRequest, res) => {
     const photo = new Photo({
       ...req.body,
       storage_id: req.uploadedFile,
-      user: req.user._id,
+      user: req.user,
     });
     await photo.save();
     res.status(201).json(photo);

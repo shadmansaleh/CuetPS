@@ -20,6 +20,7 @@ export interface Photo {
   image_url: string;
   user: string | User;
   votes: string[];
+  aspect_ratio: number;
   created_at: string;
 }
 

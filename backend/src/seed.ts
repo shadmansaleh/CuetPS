@@ -32,6 +32,7 @@ let photos = [
     title: "Mountain Landscape",
     caption: "Beautiful mountain view at sunset",
     image_url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4",
+    aspect_ratio: 1.5,
     user: "",
     votes: [],
   },
@@ -39,6 +40,7 @@ let photos = [
     title: "Ocean View",
     caption: "A serene view of the ocean with waves crashing on the shore",
     image_url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4",
+    aspect_ratio: 1.5,
     user: "",
     votes: [],
   },
@@ -46,6 +48,7 @@ let photos = [
     title: "Forest Path",
     caption: "A peaceful forest path surrounded by tall trees",
     image_url: "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
+    aspect_ratio: 0.7,
     user_id: "3",
     votes: [],
   },
@@ -53,21 +56,15 @@ let photos = [
     title: "City Skyline",
     caption: "A vibrant city skyline during sunset",
     image_url: "https://images.unsplash.com/photo-1668786418135-6227c68c8391",
+    aspect_ratio: 1.33,
     user_id: "4",
-    votes: [],
-  },
-  {
-    title: "Snowy Mountains",
-    caption: "Snow-covered mountains under a clear blue sky",
-    image_url:
-      "https://plus.unsplash.com/premium_photo-1674635191027-3d9a5520790f",
-    user_id: "5",
     votes: [],
   },
   {
     title: "Desert Dunes",
     caption: "Golden sand dunes under a clear sky",
     image_url: "https://images.unsplash.com/photo-1509316785289-025f5b846b35",
+    aspect_ratio: 1.5,
     user_id: "6",
     votes: [],
   },
@@ -75,6 +72,7 @@ let photos = [
     title: "Tropical Beach",
     caption: "Crystal clear water and white sand beach with palm trees",
     image_url: "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
+    aspect_ratio: 0.7,
     user_id: "7",
     votes: [],
   },
@@ -82,6 +80,7 @@ let photos = [
     title: "Aurora Borealis",
     caption: "Northern lights over a snowy landscape",
     image_url: "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
+    aspect_ratio: 0.7,
     user_id: "8",
     votes: [],
   },
@@ -89,6 +88,7 @@ let photos = [
     title: "Countryside View",
     caption: "Rolling hills and meadows under a cloudy sky",
     image_url: "https://images.unsplash.com/photo-1501854140801-50d01698950b",
+    aspect_ratio: 1.7,
     user_id: "9",
     votes: [],
   },
@@ -96,6 +96,7 @@ let photos = [
     title: "Rainforest Canopy",
     caption: "Lush green rainforest trees viewed from above",
     image_url: "https://images.unsplash.com/photo-1444044205806-38f3ed106c10",
+    aspect_ratio: 1.5,
     user_id: "10",
     votes: [],
   },
@@ -107,8 +108,16 @@ let exhibitions = [
     description: "A collection of stunning nature photography",
     thumbnail_url:
       "https://images.unsplash.com/photo-1506905925346-21bda4d32df4",
-    start_date: new Date(),
-    end_date: new Date(),
+    start_date: new Date(
+      2024,
+      Math.floor(Math.random() * 12),
+      Math.floor(Math.random() * 28)
+    ),
+    end_date: new Date(
+      2024,
+      Math.floor(Math.random() * 12) + 1,
+      Math.floor(Math.random() * 28)
+    ),
     status: "active",
     photos: Array(),
   },
@@ -117,8 +126,16 @@ let exhibitions = [
     description: "A collection of cityscape photography",
     thumbnail_url:
       "https://images.unsplash.com/photo-1668786418135-6227c68c8391",
-    start_date: new Date(),
-    end_date: new Date(),
+    start_date: new Date(
+      2023,
+      Math.floor(Math.random() * 12),
+      Math.floor(Math.random() * 28)
+    ),
+    end_date: new Date(
+      2023,
+      Math.floor(Math.random() * 12) + 1,
+      Math.floor(Math.random() * 28)
+    ),
     status: "active",
     photos: Array(),
   },
@@ -126,9 +143,17 @@ let exhibitions = [
     title: "Landscapes",
     description: "A collection of landscape photography",
     thumbnail_url:
-      "https://plus.unsplash.com/premium_photo-1674635191027-3d9a5520790f",
-    start_date: new Date(),
-    end_date: new Date(),
+      "https://images.unsplash.com/photo-1501854140801-50d01698950b",
+    start_date: new Date(
+      2024,
+      Math.floor(Math.random() * 12),
+      Math.floor(Math.random() * 28)
+    ),
+    end_date: new Date(
+      2024,
+      Math.floor(Math.random() * 12) + 1,
+      Math.floor(Math.random() * 28)
+    ),
     status: "active",
     photos: Array(),
   },
@@ -137,8 +162,16 @@ let exhibitions = [
     description: "A collection of wildlife photography",
     thumbnail_url:
       "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
-    start_date: new Date(),
-    end_date: new Date(),
+    start_date: new Date(
+      2023,
+      Math.floor(Math.random() * 12),
+      Math.floor(Math.random() * 28)
+    ),
+    end_date: new Date(
+      2023,
+      Math.floor(Math.random() * 12) + 1,
+      Math.floor(Math.random() * 28)
+    ),
     status: "past",
     photos: Array(),
   },
@@ -147,8 +180,16 @@ let exhibitions = [
     description: "A collection of abstract photography",
     thumbnail_url:
       "https://images.unsplash.com/photo-1509316785289-025f5b846b35",
-    start_date: new Date(),
-    end_date: new Date(),
+    start_date: new Date(
+      2024,
+      Math.floor(Math.random() * 12),
+      Math.floor(Math.random() * 28)
+    ),
+    end_date: new Date(
+      2024,
+      Math.floor(Math.random() * 12) + 1,
+      Math.floor(Math.random() * 28)
+    ),
     status: "upcoming",
     photos: Array(),
   },

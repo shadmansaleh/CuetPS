@@ -14,7 +14,7 @@ export default function Gallery() {
   const photoQuery = useQuery(
     "gallery",
     async () => {
-      const { data } = await axios.get("/api/photos/all/20");
+      const { data } = await axios.get("/api/photos/all/40");
       return data;
     },
     {

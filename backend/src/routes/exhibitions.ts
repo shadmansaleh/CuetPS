@@ -202,6 +202,10 @@ router.post(
   StorageUpload,
   async (req: AuthRequest, res: Response): Promise<any> => {
     try {
+      if (!req.uploadedFile) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
+
       const exhibition = await Exhibition.findById(req.params.id);
       if (!exhibition) {
         return res.status(404).json({ error: "Exhibition not found" });
@@ -212,6 +216,7 @@ router.post(
         caption: req.body.caption,
         storage_id: req.uploadedFile,
         user: req.user,
+        aspect_ratio: req.uploadedFile.aspect_ratio,
       });
       if (!photo) {
         throw new Error("Failed to create photo object");
