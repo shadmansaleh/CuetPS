@@ -1,10 +1,10 @@
-import React from "react";
 import { Form, Input, DatePicker, Button, message, Card } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { Upload, UploadProps } from "antd";
 import axios from "@/utils/axios";
 import moment, { Moment } from "moment";
 import { QueryClient } from "react-query";
+import { useState } from "react";
 
 // Define the interface for form values
 interface ExhibitionFormValues {
@@ -15,43 +15,46 @@ interface ExhibitionFormValues {
   themePhoto: any;
 }
 
-const CreateExhibition: React.FC = () => {
+const CreateExhibition = ({ onSuccess }: { onSuccess: () => void }) => {
   const [form] = Form.useForm();
   const queryClient = new QueryClient();
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const onFinish = async (values: ExhibitionFormValues) => {
     try {
-      const uploadThumbnailData = new FormData();
+      const formData = new FormData();
       const file = values.themePhoto[0].originFileObj;
-      uploadThumbnailData.append("file", file);
-      uploadThumbnailData.append("contentType", file.type);
-      const uploaded = await axios.post(
-        "/api/storage/upload",
-        uploadThumbnailData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-      if (uploaded.status === 200) {
-        const response = await axios.post("/api/exhibitions/create", {
-          title: values.title,
-          description: values.description,
-          start_date: values.start_date!.toISOString(),
-          end_date: values.end_date!.toISOString(),
-          thumbnail_url: uploaded.data,
-          status: "upcoming",
-        });
+      formData.append("file", file);
+      formData.append("contentType", file.type);
+      formData.append("title", values.title);
+      formData.append("description", values.description);
+      formData.append("start_date", values.start_date!.toISOString());
+      formData.append("end_date", values.end_date!.toISOString());
+      formData.append("status", "upcoming");
 
-        if (response.status === 201) {
-          message.success("Exhibition created successfully.");
-          form.resetFields();
-          queryClient.invalidateQueries("exhibitions");
-        }
+      if (
+        values.start_date &&
+        values.end_date &&
+        values.end_date < values.start_date
+      ) {
+        message.error("End date must be after start date.");
+        return;
+      }
+
+      const res = await axios.post("/api/exhibitions/create", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      if (res.status === 201) {
+        message.success("Exhibition created successfully.");
+        form.resetFields();
+        queryClient.invalidateQueries("exhibitions");
+        onSuccess();
       }
     } catch (error: any) {
       const errorMsg =
         error.response?.data?.message || "Failed to create exhibition.";
-      console.error("Error creating exhibition:", errorMsg);
+      console.error("Error creating exhibition:", error);
       message.error(errorMsg);
     }
   };
@@ -65,6 +68,13 @@ const CreateExhibition: React.FC = () => {
     beforeUpload: () => {
       // Prevent auto-upload; manually handle it via FormData
       return false;
+    },
+    onChange: (info) => {
+      info.fileList = info.fileList.slice(-1); // Limit to one file
+      let file = info.fileList[0]?.originFileObj;
+      if (file) {
+        setPreviewUrl(URL.createObjectURL(file)); // Generate a preview URL
+      }
     },
   };
 
@@ -87,6 +97,7 @@ const CreateExhibition: React.FC = () => {
         <Form.Item
           name="title"
           label="Exhibition Title"
+          required
           rules={[{ required: true, message: "Please input the title!" }]}
         >
           <Input
@@ -102,6 +113,7 @@ const CreateExhibition: React.FC = () => {
         <Form.Item
           name="description"
           label="Exhibition Description"
+          required
           rules={[{ required: true, message: "Please input the description!" }]}
         >
           <Input.TextArea
@@ -118,6 +130,7 @@ const CreateExhibition: React.FC = () => {
         <Form.Item
           name="start_date"
           label="Start Date"
+          required
           rules={[{ required: true, message: "Please select a start date!" }]}
         >
           <DatePicker
@@ -132,6 +145,7 @@ const CreateExhibition: React.FC = () => {
         <Form.Item
           name="end_date"
           label="End Date"
+          required
           rules={[{ required: true, message: "Please select an end date!" }]}
         >
           <DatePicker
@@ -143,6 +157,16 @@ const CreateExhibition: React.FC = () => {
         </Form.Item>
 
         {/* Theme Photo Upload */}
+        {previewUrl && (
+          <div className="mt-4">
+            <h4 className="text-sm font-semibold">Preview:</h4>
+            <img
+              src={previewUrl}
+              alt="Selected preview"
+              className="w-full h-auto rounded-lg mt-2 shadow-md"
+            />
+          </div>
+        )}
         <Form.Item
           name="themePhoto"
           label="Theme Cover Photo"

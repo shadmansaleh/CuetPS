@@ -13,78 +13,75 @@ import {
 import { UploadOutlined } from "@ant-design/icons";
 import axios from "@/utils/axios";
 import dayjs from "dayjs";
+import { useQuery } from "react-query";
+import { Exhibition } from "@/types";
 
 const ExhibitionDetail: React.FC = () => {
   const { id } = useParams();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [thumbnail, setThumbnail] = useState<string | null>(null);
+  const [exhibition, setExhibition] = useState<Exhibition | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const previewUrl = previewImage ? previewImage : exhibition?.thumbnail_url;
 
-  useEffect(() => {
-    const fetchExhibition = async () => {
-      try {
-        setLoading(true);
-        const { data } = await axios.get(`/api/exhibitions/${id}`);
-        console.log("Exhibition ID:", id);
-
+  const exhibitionQuery = useQuery(
+    ["exhibition", id],
+    async () => {
+      const response = await axios.get(`/api/exhibitions/${id}`);
+      return response.data;
+    },
+    {
+      onSuccess: (data: any) => {
+        setExhibition(data);
         form.setFieldsValue({
           title: data.title,
-          description: data.description, // Change to lowercase 'description'
-          startDate: dayjs(data.start_date),
-          endDate: dayjs(data.end_date),
+          description: data.description,
+          start_date: dayjs(data.start_date),
+          end_date: dayjs(data.end_date),
         });
-
-        setThumbnail(data.thumbnail_url);
-        setPreviewImage(data.thumbnail_url);
-      } catch (error) {
+      },
+      onError: () => {
         message.error("Failed to load exhibition details.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchExhibition();
-  }, [id, form]);
+      },
+    }
+  );
 
   const handleSave = async (values: any) => {
+    console.log("Form values:", values);
+    if (!exhibition) {
+      message.error("Exhibition not found.");
+      return;
+    }
     try {
       setLoading(true);
-      await axios.put(`/api/exhibitions/${id}`, {
-        title: values.title,
-        description: values.description,
-        startDate: values.startDate.toISOString(),
-        endDate: values.endDate.toISOString(),
-        thumbnail,
+      let formData = new FormData();
+      const appendIfChanged = (key: keyof Exhibition, value: any) => {
+        if (exhibition[key] !== value) {
+          formData.append(key, value);
+        }
+      };
+      appendIfChanged("title", values.title);
+      appendIfChanged("description", values.description);
+      appendIfChanged("start_date", values.start_date.toISOString());
+      appendIfChanged("end_date", values.end_date.toISOString());
+      if (previewImage) {
+        formData.append("file", values.thumbnail[0].originFileObj);
+      }
+
+      if ([...formData.keys()].length === 0) {
+        message.info("No changes detected.");
+        return;
+      }
+      await axios.put(`/api/exhibitions/${id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
+      exhibitionQuery.refetch();
       message.success("Exhibition updated successfully!");
     } catch (error) {
+      console.error("Error updating exhibition:", error);
       message.error("Failed to update exhibition.");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append("thumbnail", file);
-
-    try {
-      const { data } = await axios.post(
-        `/api/exhibitions/${id}/upload-thumbnail`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      setThumbnail(data.url);
-      setPreviewImage(data.url);
-      message.success("Thumbnail uploaded successfully!");
-    } catch (error) {
-      message.error("Failed to upload thumbnail.");
     }
   };
 
@@ -122,7 +119,7 @@ const ExhibitionDetail: React.FC = () => {
           </Form.Item>
 
           <Form.Item
-            name="startDate"
+            name="start_date"
             label="Start Date"
             rules={[{ required: true, message: "Please select a start date" }]}
           >
@@ -130,26 +127,35 @@ const ExhibitionDetail: React.FC = () => {
           </Form.Item>
 
           <Form.Item
-            name="endDate"
+            name="end_date"
             label="End Date"
             rules={[{ required: true, message: "Please select an end date" }]}
           >
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
 
-          <Form.Item label="Thumbnail">
-            {previewImage && (
-              <Image
-                src={previewImage}
-                alt="Thumbnail"
-                style={styles.thumbnail}
-              />
-            )}
+          <Image src={previewUrl} alt="Thumbnail" style={styles.thumbnail} />
+          <Form.Item
+            name="thumbnail"
+            label="Thumbnail"
+            valuePropName="fileList"
+            getValueFromEvent={(e) => e?.fileList}
+          >
             <Upload
+              name="file"
+              listType="picture"
+              maxCount={1}
+              accept="image/*"
               showUploadList={false}
-              beforeUpload={(file) => {
-                handleUpload(file);
+              beforeUpload={() => {
                 return false;
+              }}
+              onChange={(info) => {
+                info.fileList = info.fileList.slice(-1); // Limit to one file
+                let file = info.fileList[0]?.originFileObj;
+                if (file) {
+                  setPreviewImage(URL.createObjectURL(file)); // Generate a preview URL
+                }
               }}
             >
               <Button icon={<UploadOutlined />}>Upload New Thumbnail</Button>
@@ -160,7 +166,8 @@ const ExhibitionDetail: React.FC = () => {
             <Button
               type="primary"
               htmlType="submit"
-              loading={loading}
+              loading={loading || exhibitionQuery.isLoading}
+              disabled={loading || exhibitionQuery.isLoading}
               style={styles.saveButton}
             >
               Save Changes

@@ -3,6 +3,7 @@ import { Document } from "mongoose";
 
 export type AuthRequest = Request & {
   user?: JWT_USER;
+  uploadedFile?: string;
 };
 
 export type JWT_USER = {

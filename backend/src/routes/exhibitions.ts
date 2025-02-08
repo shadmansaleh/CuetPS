@@ -5,7 +5,7 @@ import { populate } from "dotenv";
 import Photo from "../models/Photo";
 import multer from "multer";
 import path from "path";
-
+import StorageUpload from "../middlewares/StorageUpload";
 
 const router = express.Router();
 
@@ -29,30 +29,36 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Update exhibition details (title, descriptions, dates, thumbnail)
-router.put("/:id", authAdmin, async (req: AuthRequest, res: Response): Promise<any> => {
-  try {
-    const { title, description, startDate, endDate, thumbnail } = req.body;
+router.put(
+  "/:id",
+  authAdmin,
+  StorageUpload,
+  async (req: AuthRequest, res: Response): Promise<any> => {
+    try {
+      const { title, description, start_date, end_date } = req.body;
+      console.log("req.body:", req.body);
 
-    const exhibition = await Exhibition.findById(req.params.id);
-    if (!exhibition) {
-      return res.status(404).json({ error: "Exhibition not found" });
+      const exhibition = await Exhibition.findById(req.params.id);
+      if (!exhibition) {
+        return res.status(404).json({ error: "Exhibition not found" });
+      }
+
+      const changeIfNotNull = (key: string, value: any) => {
+        if (value) exhibition[key] = value;
+      };
+
+      changeIfNotNull("title", title);
+      changeIfNotNull("description", description);
+      changeIfNotNull("start_date", start_date && new Date(start_date));
+      changeIfNotNull("end_date", end_date && new Date(end_date));
+      changeIfNotNull("thumbnail_storage_id", req.uploadedFile);
+      await exhibition.save();
+      res.json({ message: "Exhibition updated successfully", exhibition });
+    } catch (error) {
+      res.status(500).json({ error: "Server error" });
     }
-
-    exhibition.title = title;
-    exhibition.description = description;
-    exhibition.start_date = new Date(startDate);
-    exhibition.end_date = new Date(endDate);
-    if (thumbnail) exhibition.thumbnail_url = thumbnail;
-
-    await exhibition.save();
-    res.json({ message: "Exhibition updated successfully", exhibition });
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ error: "Server error" });
   }
-});
-
-
+);
 
 // Upload exhibition thumbnail
 router.post(
@@ -69,7 +75,10 @@ router.post(
       exhibition.thumbnail_url = `/uploads/${req.file?.filename}`;
       await exhibition.save();
 
-      res.json({ message: "Thumbnail uploaded successfully", url: exhibition.thumbnail_url });
+      res.json({
+        message: "Thumbnail uploaded successfully",
+        url: exhibition.thumbnail_url,
+      });
     } catch (error) {
       res.status(500).json({ error: "Server error" });
     }
@@ -200,32 +209,46 @@ router.post(
 );
 
 // Create exhibition (admin only)
-router.post("/create", auth, async (req: AuthRequest, res): Promise<any> => {
-  try {
-    if (req.user.role !== "admin") {
-      return res.status(403).json({ error: "Not authorized" });
+router.post(
+  "/create",
+  authAdmin,
+  StorageUpload,
+  async (req: AuthRequest, res: Response): Promise<any> => {
+    try {
+      const exhibition = new Exhibition({
+        title: req.body.title,
+        description: req.body.description,
+        start_date: new Date(req.body.start_date),
+        end_date: new Date(req.body.end_date),
+        thumbnail_storage_id: req.uploadedFile,
+        status: req.body.status,
+      });
+      await exhibition.save();
+      res.status(201).json(exhibition);
+    } catch (error) {
+      res.status(400).json({ error: "Creation failed" });
     }
-
-    const exhibition = new Exhibition(req.body);
-    await exhibition.save();
-    res.status(201).json(exhibition);
-  } catch (error) {
-    res.status(400).json({ error: "Creation failed" });
   }
-});
+);
 
 // Submit photo to exhibition
 router.post(
   "/:id/submit",
   auth,
-  async (req: AuthRequest, res): Promise<any> => {
+  StorageUpload,
+  async (req: AuthRequest, res: Response): Promise<any> => {
     try {
       const exhibition = await Exhibition.findById(req.params.id);
       if (!exhibition) {
         return res.status(404).json({ error: "Exhibition not found" });
       }
 
-      let photo = new Photo({ ...req.body, user: req.user._id });
+      let photo = new Photo({
+        title: req.body.title,
+        caption: req.body.caption,
+        storage_id: req.uploadedFile,
+        user: req.user._id,
+      });
       if (!photo) {
         throw new Error("Failed to create photo object");
       }

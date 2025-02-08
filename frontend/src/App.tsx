@@ -54,6 +54,11 @@ function App() {
       ],
     },
     {
+      path: `${__BASE_URL__}/`,
+      element: <ProtectedRoute role={Role.ADMIN} />,
+      children: [{ index: true, element: <Navigate to="/admin" replace /> }],
+    },
+    {
       path: `${__BASE_URL__}/admin`,
       element: <ProtectedRoute role={Role.ADMIN} />,
       children: [
@@ -61,7 +66,10 @@ function App() {
         { path: ":path", element: <AdminPage /> },
         { path: "exhibitions/:id", element: <ExhibitionDetail /> },
         { path: "exhibitions/:id/photos", element: <ExhibitionPhotos /> },
-        { path: "exhibitions/:id/approvals", element: <ExhibitionPhotoApproval /> },
+        {
+          path: "exhibitions/:id/approvals",
+          element: <ExhibitionPhotoApproval />,
+        },
       ],
     },
     {

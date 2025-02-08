@@ -101,7 +101,10 @@ function ExhibitionTab() {
         <img
           src={exhibition.thumbnail_url}
           alt={exhibition.title}
-          className="max-w-20 max-h-20 object-cover rounded-md"
+          className="max-w-20 max-h-20 object-cover rounded-md cursor-pointer"
+          onClick={() =>
+            handleMenuClick({ key: "seeAllPhotos", id: exhibition._id })
+          }
         />
       ),
     },
@@ -248,7 +251,12 @@ function ExhibitionTab() {
         destroyOnClose
         width={600}
       >
-        <CreateExhibition />
+        <CreateExhibition
+          onSuccess={() => {
+            setIsModalVisible(false);
+            exhibitionQuery.refetch();
+          }}
+        />
       </Modal>
 
       {exhibitionQuery.isError && <div>Failed to load exhibitions</div>}

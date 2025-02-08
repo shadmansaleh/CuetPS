@@ -31,33 +31,26 @@ const PhotoUploadModal = ({
     e.preventDefault();
     if (selectedFile) {
       const formData = new FormData();
+      formData.append("title", title);
+      formData.append("caption", caption);
       formData.append("file", selectedFile);
       formData.append("Content-Type", selectedFile.type);
+
       try {
-        const upload_response = await axios.post(
-          "/api/storage/upload",
+        const res = await axios.post(
+          `/api/exhibitions/${exhibitionId}/submit`,
           formData,
           {
             headers: { "Content-Type": "multipart/form-data" },
           }
         );
-        if (upload_response.status === 200) {
-          const submit_response = await axios.post(
-            `/api/exhibitions/${exhibitionId}/submit`,
-            {
-              title: title,
-              caption: caption,
-              image_url: upload_response.data,
-            }
-          );
-          if (submit_response.status === 201) {
-            enqueueSnackbar("Photo submitted", {
-              variant: "success",
-            });
-            setIsOpen(false);
-            setSelectedFile(null);
-            setPreviewUrl(null);
-          }
+        if (res.status === 201) {
+          enqueueSnackbar("Photo submitted", {
+            variant: "success",
+          });
+          setIsOpen(false);
+          setSelectedFile(null);
+          setPreviewUrl(null);
         }
       } catch (error) {
         enqueueSnackbar("Submit failed", {

@@ -22,6 +22,9 @@ const FileSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  url: {
+    type: String,
+  },
   permission: {
     type: String,
     enum: ["private", "public", "restricted"],
@@ -33,6 +36,18 @@ const FileSchema = new mongoose.Schema({
     ref: "User",
     default: [],
   },
+});
+
+// url is derived as process.env.BACKEND_URL + /storage/ + id
+FileSchema.post(["find", "findOne"], function (docs) {
+  const documents = Array.isArray(docs) ? docs : [docs];
+  documents.forEach((doc: any) => {
+    doc.url =
+      (process.env.BACKEND_URL || "http://localhost:5000") +
+      "/api/storage/" +
+      doc._id;
+  });
+  return Array.isArray(docs) ? documents : documents[0];
 });
 
 export const FileModel = mongoose.model("File", FileSchema);

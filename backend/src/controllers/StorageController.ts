@@ -23,7 +23,7 @@ export const StorageUploadController = async (
       permission_allowlist: allow_list,
     });
     await file.save();
-    res.status(200).json(`${process.env.BACKEND_URL}/api/storage/${file._id}`);
+    res.status(200).json({ id: file._id });
   } catch (e: any) {
     console.error(e.message);
     return res.status(400).json({ message: "Error uploading file" });

@@ -3,7 +3,7 @@ import { auth, AuthRequest } from "../middlewares/auth";
 import { Photo } from "../models/Photo";
 import { RequestHandler } from "express";
 import { getRandomK } from "../utils/utils";
-import User from "../models/User";
+import StorageUpload from "../middlewares/StorageUpload";
 
 const router = express.Router();
 
@@ -29,10 +29,11 @@ router.get("/user/:id", async (req, res) => {
 });
 
 // Upload a photo
-router.post("/upload", auth, (async (req: AuthRequest, res) => {
+router.post("/upload", auth, StorageUpload, (async (req: AuthRequest, res) => {
   try {
     const photo = new Photo({
       ...req.body,
+      storage_id: req.uploadedFile,
       user: req.user._id,
     });
     await photo.save();
@@ -72,7 +73,9 @@ router.get("/:id/download", (async (req, res) => {
     if (!photo) {
       return res.status(404).json({ error: "Photo not found" });
     }
-    res.redirect(photo.image_url);
+    res.redirect(
+      photo.image_url || process.env.ORIGIN_URL || "http://localhost:3000"
+    );
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }

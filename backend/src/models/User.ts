@@ -7,6 +7,7 @@ interface IUser extends Document {
   password: string;
   bio: string;
   avatar_url: string;
+  avatar_storage_id: mongoose.Schema.Types.ObjectId;
   role: string;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
@@ -27,6 +28,10 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
     },
     bio: String,
     avatar_url: String,
+    avatar_storage_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Storage",
+    },
     role: {
       type: String,
       enum: ["user", "admin"],
@@ -51,6 +56,19 @@ userSchema.methods.comparePassword = async function (
 ) {
   return bcrypt.compare(candidatePassword, this.password);
 };
+
+userSchema.post(["find", "findOne"], function (docs) {
+  const documents = Array.isArray(docs) ? docs : [docs];
+  documents.forEach((doc: any) => {
+    if (doc?.avatar_storage_id) {
+      doc.avatar_url =
+        (process.env.BACKEND_URL || "http://localhost:5000") +
+        "/api/storage/" +
+        doc.avatar_storage_id;
+    }
+  });
+  return Array.isArray(docs) ? documents : documents[0];
+});
 
 export const User = mongoose.model("User", userSchema);
 export default User;

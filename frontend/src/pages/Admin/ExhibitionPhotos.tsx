@@ -21,14 +21,18 @@ export default function ExhibitionPhotos() {
     }
   );
 
-  const downloadPhoto = (id: string, title: string) => {
+  const downloadPhoto = async (url: string, title: string) => {
     try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.href = `/api/exhibitionPhotos/${id}/download`;
+      link.href = blobUrl;
       link.setAttribute("download", `${title}.jpg`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
       message.success("Photo downloaded successfully!");
     } catch (error) {
       console.error("Download error:", error);
@@ -44,7 +48,8 @@ export default function ExhibitionPhotos() {
         <img
           src={photo.image_url}
           alt={photo.title}
-          className="max-w-20 max-h-20 object-cover rounded-md"
+          className="max-w-20 max-h-20 object-cover rounded-md cursor-pointer"
+          onClick={() => window.open(photo.image_url, "_blank")}
         />
       ),
     },
@@ -85,7 +90,7 @@ export default function ExhibitionPhotos() {
           <Button
             type="link"
             className="btn btn-sm btn-outline btn-info text-white"
-            onClick={() => downloadPhoto(photo._id, photo.title)}
+            onClick={() => downloadPhoto(photo.image_url, photo.title)}
           >
             Download
           </Button>
