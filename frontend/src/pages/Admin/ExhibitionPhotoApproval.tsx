@@ -1,6 +1,6 @@
 import { Table, Button, Typography } from "antd";
 import { useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient, useMutation } from "react-query";
 import axios from "@/utils/axios";
 import { useParams } from "react-router-dom";
 import { Photo } from "@/types";
@@ -10,6 +10,10 @@ const { Title } = Typography;
 export default function ExhibitionPhotoApproval() {
   const { id } = useParams<{ id: string }>();
   const [approvalRequests, setApprovalRequests] = useState<Photos[]>([]);
+
+
+  const queryClient = useQueryClient();
+
   const approvalQuery = useQuery(
     ["exhibition-approvals", id],
     async () => {
@@ -19,6 +23,45 @@ export default function ExhibitionPhotoApproval() {
     {
       onSuccess: (data) => setApprovalRequests(data),
     },
+  );
+
+
+  const downloadPhoto = (id: string, title: string) => {
+    try {
+      const link = document.createElement("a");
+      link.href = `/api/exhibitionPhotos/${id}/download`;
+      link.setAttribute("download", `${title}.jpg`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      message.success("Photo downloaded successfully!");
+    } catch (error) {
+      console.error("Download error:", error);
+      message.error("Failed to download photo.");
+    }
+  };
+
+
+  const approvalAction = useMutation(
+    async ({ photoId, accept }: { photoId: string; accept: boolean }) => {
+      const { data } = await axios.post(
+        `/api/exhibitions/${exhibitionId}/${accept ? "approve" : "reject"
+        }/${photoId}`
+      );
+      return data;
+    },
+    {
+      onSuccess: (_, args) => {
+        const { accept } = args;
+
+        queryClient.invalidateQueries(["exhibition-photos", exhibitionId]);
+        queryClient.invalidateQueries(["photo-approval", exhibitionId]);
+        message.success(`Photo ${accept ? "approved" : "rejected"}`);
+      },
+      onError: (_, args) => {
+        message.error(`Failed to ${args.accept ? "approve" : "reject"} photo`);
+      },
+    }
   );
 
   const tableColumns = [

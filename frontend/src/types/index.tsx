@@ -36,9 +36,15 @@ export interface Exhibition {
 }
 
 export interface ExhibitionPhoto {
-  id: string;
+  _id: string;
   exhibition_id: string;
   photo_id: string;
   selected: boolean;
   created_at: string;
+}
+
+export interface ExhibitionPhotoGroup {
+  _id: string;
+  selected: boolean;
+  image: string;
 }

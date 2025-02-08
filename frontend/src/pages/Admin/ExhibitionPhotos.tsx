@@ -1,4 +1,4 @@
-import { Table, Button, Typography,} from "antd";
+import { Table, Button, message, Typography, Menu, Dropdown } from "antd";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import axios from "@/utils/axios";
@@ -23,6 +23,22 @@ export default function ExhibitionPhotos() {
       onSuccess: (data) => setPhotos(data),
     },
   );
+
+
+  const downloadPhoto = (id: string, title: string) => {
+    try {
+      const link = document.createElement("a");
+      link.href = `/api/exhibitionPhotos/${id}/download`;
+      link.setAttribute("download", `${title}.jpg`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      message.success("Photo downloaded successfully!");
+    } catch (error) {
+      console.error("Download error:", error);
+      message.error("Failed to download photo.");
+    }
+  };
 
   const tableColumns = [
     {
@@ -73,11 +89,11 @@ export default function ExhibitionPhotos() {
 
   return (
     <div className="h-dvh w-dvw">
-      <div className={ " mt-20 mx-6"}>
+      <div className={" mt-20 mx-6"}>
         <Title level={4}>Photos</Title>
         <Table
           columns={tableColumns}
-          dataSource={photos}
+          dataSource={photos} // Limit to visibleCount
           rowKey="_id"
           bordered
           pagination={true}

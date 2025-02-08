@@ -80,7 +80,7 @@
 }
 
 .tableContainer {
-  max-height: 600px; /* Set a maximum height for the table */
+  max-height: 800px; /* Set a maximum height for the table */
   overflow-y: auto; /* Enable vertical scrolling */
   margin-bottom: 20px;
 }
