@@ -123,7 +123,7 @@ const CreateExhibition: React.FC = () => {
           <DatePicker
             style={{ width: "100%" }}
             disabledDate={(current) =>
-              current && current < moment().endOf("day")
+              current && current < moment().subtract(1, "days").endOf("day")
             }
           />
         </Form.Item>

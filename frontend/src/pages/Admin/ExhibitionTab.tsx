@@ -251,10 +251,15 @@ function ExhibitionTab() {
             <Title level={2}>Exhibitions</Title>
             <Table
               columns={tableColumns}
-              dataSource={filteredExhibitions} // Limit to visibleCount
+              dataSource={filteredExhibitions}
               rowKey="_id"
               bordered
-              pagination={true}
+              pagination={{
+                defaultPageSize: 10,
+                showSizeChanger: true,
+                showTotal: (total, range) =>
+                  `${range[0]}-${range[1]} of ${total} items`,
+              }}
               loading={exhibitionQuery.isLoading}
             />
           </div>

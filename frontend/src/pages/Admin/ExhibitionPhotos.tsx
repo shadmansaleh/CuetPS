@@ -1,8 +1,7 @@
-import { Table, Button, message, Typography, Menu, Dropdown } from "antd";
+import { Table, Button, message, Typography } from "antd";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import axios from "@/utils/axios";
-import { Exhibition } from "@/types";
 import { useParams } from "react-router-dom";
 import { Photo } from "@/types";
 
@@ -10,20 +9,17 @@ const { Title } = Typography;
 
 export default function ExhibitionPhotos() {
   const { id } = useParams<{ id: string }>();
-  const [photos, setPhotos] = useState<Exhibition[]>([]);
+  const [photos, setPhotos] = useState<Photo[]>([]);
   const photoQuery = useQuery(
     ["exhibition-photos", id],
     async () => {
-      const { data } = await axios.get(
-        `/api/exhibitions/${id}/photos`,
-      );
+      const { data } = await axios.get(`/api/exhibitions/${id}/photos`);
       return data;
     },
     {
       onSuccess: (data) => setPhotos(data),
-    },
+    }
   );
-
 
   const downloadPhoto = (id: string, title: string) => {
     try {
@@ -89,17 +85,22 @@ export default function ExhibitionPhotos() {
 
   return (
     <div className="h-dvh w-dvw">
-      <div className={" mt-20 mx-6"}>
+      <div className={" mt-20 mx-6 max-h-dvh overflow-y-auto"}>
         <Title level={4}>Photos</Title>
         <Table
           columns={tableColumns}
           dataSource={photos} // Limit to visibleCount
           rowKey="_id"
           bordered
-          pagination={true}
+          pagination={{
+            defaultPageSize: 10,
+            showSizeChanger: true,
+            showTotal: (total, range) =>
+              `${range[0]}-${range[1]} of ${total} items`,
+          }}
           loading={photoQuery.isLoading}
         />
       </div>
     </div>
-  )
+  );
 }

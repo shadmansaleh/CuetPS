@@ -1,6 +1,15 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Form, Input, DatePicker, Button, Upload, message, Card, Image } from "antd";
+import {
+  Form,
+  Input,
+  DatePicker,
+  Button,
+  Upload,
+  message,
+  Card,
+  Image,
+} from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import axios from "@/utils/axios";
 import dayjs from "dayjs";
@@ -21,11 +30,10 @@ const ExhibitionDetail: React.FC = () => {
 
         form.setFieldsValue({
           title: data.title,
-          description: data.description,  // Change to lowercase 'description'
+          description: data.description, // Change to lowercase 'description'
           startDate: dayjs(data.start_date),
           endDate: dayjs(data.end_date),
         });
-        
 
         setThumbnail(data.thumbnail_url);
         setPreviewImage(data.thumbnail_url);
@@ -82,24 +90,50 @@ const ExhibitionDetail: React.FC = () => {
 
   return (
     <div style={styles.pageContainer}>
-      <Card title="Edit Exhibition Details" loading={loading} bordered={false} style={styles.card}>
+      <Card
+        title="Edit Exhibition Details"
+        loading={loading}
+        bordered={false}
+        style={styles.card}
+      >
         <Form form={form} layout="vertical" onFinish={handleSave}>
-          <Form.Item name="title" label="Exhibition Title" rules={[{ required: true, message: "Please enter the title" }]}>
+          <Form.Item
+            name="title"
+            label="Exhibition Title"
+            rules={[{ required: true, message: "Please enter the title" }]}
+          >
             <Input placeholder="Enter title" />
           </Form.Item>
-          <Form.Item name="description" label="Exhibition Description" rules={[{ required: true, message: "Please enter the description" }]}>
-            <Input.TextArea style={{
-              padding: "12px",
-              fontSize: "16px",
-              borderRadius: "8px",
-            }} placeholder="Enter description" />
+          <Form.Item
+            name="description"
+            label="Exhibition Description"
+            rules={[
+              { required: true, message: "Please enter the description" },
+            ]}
+          >
+            <Input.TextArea
+              style={{
+                padding: "12px",
+                fontSize: "16px",
+                borderRadius: "8px",
+              }}
+              placeholder="Enter description"
+            />
           </Form.Item>
 
-          <Form.Item name="startDate" label="Start Date" rules={[{ required: true, message: "Please select a start date" }]}>
+          <Form.Item
+            name="startDate"
+            label="Start Date"
+            rules={[{ required: true, message: "Please select a start date" }]}
+          >
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
 
-          <Form.Item name="endDate" label="End Date" rules={[{ required: true, message: "Please select an end date" }]}>
+          <Form.Item
+            name="endDate"
+            label="End Date"
+            rules={[{ required: true, message: "Please select an end date" }]}
+          >
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
 
@@ -123,7 +157,12 @@ const ExhibitionDetail: React.FC = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" loading={loading} style={styles.saveButton}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              style={styles.saveButton}
+            >
               Save Changes
             </Button>
           </Form.Item>
@@ -153,7 +192,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   thumbnail: {
     width: "120px",
     height: "120px",
-    borderRadius: "50%",
+    borderRadius: "10%",
     objectFit: "cover",
     display: "block",
     margin: "0 auto 15px auto",

@@ -1,4 +1,4 @@
-import { Table, Button, Typography } from "antd";
+import { Table, Button, Typography, message } from "antd";
 import { useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "react-query";
 import axios from "@/utils/axios";
@@ -9,8 +9,7 @@ const { Title } = Typography;
 
 export default function ExhibitionPhotoApproval() {
   const { id } = useParams<{ id: string }>();
-  const [approvalRequests, setApprovalRequests] = useState<Photos[]>([]);
-
+  const [approvalRequests, setApprovalRequests] = useState<Photo[]>([]);
 
   const queryClient = useQueryClient();
 
@@ -22,9 +21,8 @@ export default function ExhibitionPhotoApproval() {
     },
     {
       onSuccess: (data) => setApprovalRequests(data),
-    },
+    }
   );
-
 
   const downloadPhoto = (id: string, title: string) => {
     try {
@@ -41,12 +39,10 @@ export default function ExhibitionPhotoApproval() {
     }
   };
 
-
   const approvalAction = useMutation(
     async ({ photoId, accept }: { photoId: string; accept: boolean }) => {
       const { data } = await axios.post(
-        `/api/exhibitions/${exhibitionId}/${accept ? "approve" : "reject"
-        }/${photoId}`
+        `/api/exhibitions/${id}/${accept ? "approve" : "reject"}/${photoId}`
       );
       return data;
     },
@@ -54,8 +50,8 @@ export default function ExhibitionPhotoApproval() {
       onSuccess: (_, args) => {
         const { accept } = args;
 
-        queryClient.invalidateQueries(["exhibition-photos", exhibitionId]);
-        queryClient.invalidateQueries(["photo-approval", exhibitionId]);
+        queryClient.invalidateQueries(["exhibition-photos", id]);
+        queryClient.invalidateQueries(["photo-approval", id]);
         message.success(`Photo ${accept ? "approved" : "rejected"}`);
       },
       onError: (_, args) => {
@@ -131,14 +127,19 @@ export default function ExhibitionPhotoApproval() {
 
   return (
     <div className="h-dvh w-dvw">
-      <div className={" mt-20 mx-6"}>
+      <div className={" mt-20 mx-6 max-h-dvh overflow-y-auto"}>
         <Title level={4}>New Submissions</Title>
         <Table
           columns={tableColumns}
           dataSource={approvalRequests} // Limit to visibleCount
           rowKey="_id"
           bordered
-          pagination={false}
+          pagination={{
+            defaultPageSize: 10,
+            showSizeChanger: true,
+            showTotal: (total, range) =>
+              `${range[0]}-${range[1]} of ${total} items`,
+          }}
           loading={approvalQuery.isLoading}
         />
       </div>
