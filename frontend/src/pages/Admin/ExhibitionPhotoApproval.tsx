@@ -62,6 +62,17 @@ export default function ExhibitionPhotoApproval() {
 
   const tableColumns = [
     {
+      title: "Photo",
+      key: "image",
+      render: (_: any, photo: Photo) => (
+        <img
+          src={photo.image_url}
+          alt={photo.title}
+          className="max-w-20 max-h-20 object-cover rounded-md"
+        />
+      ),
+    },
+    {
       title: "Photo Title",
       dataIndex: "title",
       key: "title",

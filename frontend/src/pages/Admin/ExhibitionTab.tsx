@@ -95,6 +95,17 @@ function ExhibitionTab() {
 
   const tableColumns = [
     {
+      title: "Thumbnail",
+      key: "image",
+      render: (_: any, exhibition: Exhibition) => (
+        <img
+          src={exhibition.thumbnail_url}
+          alt={exhibition.title}
+          className="max-w-20 max-h-20 object-cover rounded-md"
+        />
+      ),
+    },
+    {
       title: "Title",
       dataIndex: "title",
       key: "title",
@@ -169,7 +180,7 @@ function ExhibitionTab() {
               })
             }
           >
-            <div className="text-orange-600 flex justify-center align-center cursor-pointer  hover:text-blue-600">
+            <div className="text-purple-600 flex justify-center align-center cursor-pointer  hover:text-blue-600">
               {
                 exhibition.photos.filter((x: any) => x.selected === false)
                   .length
@@ -193,7 +204,9 @@ function ExhibitionTab() {
               cursor: "pointer",
             }}
           >
-            ...
+            <div className=" flex justify-center align-center cursor-pointer text-blue-600">
+              ...
+            </div>
           </Button>
         </Dropdown>
       ),
