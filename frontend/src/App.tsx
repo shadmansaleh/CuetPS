@@ -19,7 +19,8 @@ import Exhibition from "./pages/visitor/ExhibitionPage";
 import Gallery from "./pages/visitor/Gallery";
 import ExhibitionDetails from "./pages/visitor/ExhibitionDetails";
 import ExhibitionDetail from "./pages/Admin/ExhibitionDetail";
-// import ExhibitionPhotos from "./pages/Admin/ExhibitionPhotos";
+import ExhibitionPhotos from "./pages/Admin/ExhibitionPhotos";
+import ExhibitionPhotoApproval from "./pages/Admin/ExhibitionPhotoApproval";
 import Profile from "./pages/visitor/Profile";
 import AdminPage from "./pages/Admin/AdminPage";
 import { useAuth } from "./contexts/AuthContext";
@@ -59,7 +60,8 @@ function App() {
         { index: true, element: <AdminPage /> },
         { path: ":path", element: <AdminPage /> },
         { path: "exhibitions/:id", element: <ExhibitionDetail /> },
-        // { path: "exhibitions/:id", element: <ExhibitionPhotos /> },
+        { path: "exhibitions/:id/photos", element: <ExhibitionPhotos /> },
+        { path: "exhibitions/:id/approvals", element: <ExhibitionPhotoApproval /> },
       ],
     },
     {

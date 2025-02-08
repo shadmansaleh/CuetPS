@@ -1,26 +1,23 @@
-import { Table, Button, Typography,} from "antd";
+import { Table, Button, Typography } from "antd";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import axios from "@/utils/axios";
-import { Exhibition } from "@/types";
 import { useParams } from "react-router-dom";
 import { Photo } from "@/types";
 
 const { Title } = Typography;
 
-export default function ExhibitionPhotos() {
+export default function ExhibitionPhotoApproval() {
   const { id } = useParams<{ id: string }>();
-  const [photos, setPhotos] = useState<Exhibition[]>([]);
-  const photoQuery = useQuery(
-    ["exhibition-photos", id],
+  const [approvalRequests, setApprovalRequests] = useState<Photos[]>([]);
+  const approvalQuery = useQuery(
+    ["exhibition-approvals", id],
     async () => {
-      const { data } = await axios.get(
-        `/api/exhibitions/${id}/photos`,
-      );
+      const { data } = await axios.get(`/api/exhibitions/${id}/approval`);
       return data;
     },
     {
-      onSuccess: (data) => setPhotos(data),
+      onSuccess: (data) => setApprovalRequests(data),
     },
   );
 
@@ -54,6 +51,24 @@ export default function ExhibitionPhotos() {
         <>
           <Button
             type="link"
+            className="btn btn-sm btn-outline btn-success text-white"
+            onClick={() =>
+              approvalAction.mutate({ photoId: photo._id, accept: true })
+            }
+          >
+            Accept
+          </Button>
+          <Button
+            type="link"
+            className="btn btn-sm btn-outline btn-error text-white"
+            onClick={() =>
+              approvalAction.mutate({ photoId: photo._id, accept: false })
+            }
+          >
+            Reject
+          </Button>
+          <Button
+            type="link"
             className="btn btn-sm btn-outline btn-info text-white"
             onClick={() => window.open(photo.image_url, "_blank")}
           >
@@ -73,17 +88,17 @@ export default function ExhibitionPhotos() {
 
   return (
     <div className="h-dvh w-dvw">
-      <div className={ " mt-20 mx-6"}>
-        <Title level={4}>Photos</Title>
+      <div className={" mt-20 mx-6"}>
+        <Title level={4}>New Submissions</Title>
         <Table
           columns={tableColumns}
-          dataSource={photos}
+          dataSource={approvalRequests} // Limit to visibleCount
           rowKey="_id"
           bordered
-          pagination={true}
-          loading={photoQuery.isLoading}
+          pagination={false}
+          loading={approvalQuery.isLoading}
         />
       </div>
     </div>
-  )
+  );
 }

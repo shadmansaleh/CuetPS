@@ -77,6 +77,8 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({
       navigate(`/admin/exhibitions/${exhibitionId}`);
     } else if (key === "seeAllPhotos") {
       navigate(`/admin/exhibitions/${exhibitionId}/photos`);
+    } else if (key === "seeAllRequests") {
+      navigate(`/admin/exhibitions/${exhibitionId}/approvals`);
     }
   };
   
@@ -86,7 +88,8 @@ const ExhibitionTable: React.FC<ExhibitionTableProps> = ({
       onClick={handleMenuClick}
       items={[
         { label: "View Details", key: "viewDetails" },
-        { label: "See All Photos", key: "seeAllPhotos" },
+        { label: "See Photos", key: "seeAllPhotos" },
+        { label: "See Requests", key: "seeAllRequests" },
       ]}
     />
   );
