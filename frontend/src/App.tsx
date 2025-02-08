@@ -18,7 +18,6 @@ import NotFound404 from "./pages/Common/NotFound404";
 import Exhibition from "./pages/visitor/ExhibitionPage";
 import Gallery from "./pages/visitor/Gallery";
 import ExhibitionDetails from "./pages/visitor/ExhibitionDetails";
-import ExhibitionDetail from "./pages/Admin/ExhibitionDetail";
 import ExhibitionPhotos from "./pages/Admin/ExhibitionPhotos";
 import ExhibitionPhotoApproval from "./pages/Admin/ExhibitionPhotoApproval";
 import Profile from "./pages/visitor/Profile";

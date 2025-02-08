@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useState } from "react";
 import {
   Form,
   Input,
@@ -16,14 +15,13 @@ import dayjs from "dayjs";
 import { useQuery } from "react-query";
 import { Exhibition } from "@/types";
 
-const ExhibitionDetail = ({
+const EditExhibition = ({
   id,
   onSuccess,
 }: {
   id: string;
   onSuccess: () => void;
 }) => {
-  // const { id } = useParams();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [exhibition, setExhibition] = useState<Exhibition | null>(null);
@@ -60,7 +58,7 @@ const ExhibitionDetail = ({
     }
     try {
       setLoading(true);
-      let formData = new FormData();
+      const formData = new FormData();
       const appendIfChanged = (key: keyof Exhibition, value: any) => {
         if (exhibition[key] !== value) {
           formData.append(key, value);
@@ -217,4 +215,4 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-export default ExhibitionDetail;
+export default EditExhibition;

@@ -16,7 +16,7 @@ import Loading from "@/components/Loading";
 import styles from "./AdminPage.module.css";
 import { Exhibition } from "@/types";
 import { useNavigate } from "react-router-dom";
-import ExhibitionDetail from "./ExhibitionDetail";
+import EditExhibition from "./EditExhibition.tsx";
 
 const { Title } = Typography;
 
@@ -273,7 +273,7 @@ function ExhibitionTab() {
           body: { padding: 0 },
         }}
       >
-        <ExhibitionDetail
+        <EditExhibition
           id={editModal.id}
           onSuccess={() => {
             handleCancelModal();

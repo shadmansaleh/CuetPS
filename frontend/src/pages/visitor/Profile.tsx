@@ -61,7 +61,7 @@ export default function Profile() {
       formData.append("file", selectedFile);
 
       try {
-        const { data } = await axios.post(
+        await axios.post(
           `/api/user/${user._id}/upload-profile-picture`,
           formData,
           {

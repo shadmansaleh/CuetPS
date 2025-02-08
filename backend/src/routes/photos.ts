@@ -89,10 +89,12 @@ router.post("/:id/vote", auth, (async (req: AuthRequest, res) => {
     if (!photo) {
       return res.status(404).json({ error: "Photo not found" });
     }
-    if (photo?.votes.includes(req.user._id)) {
+    // @ts-ignore
+    if (photo?.votes.includes(req?.user?._id)) {
       return res.status(400).json({ error: "Already voted" });
     } else {
-      photo?.votes.push(req.user._id);
+      // @ts-ignore
+      photo?.votes.push(req?.user?._id);
     }
     await photo.save();
     res.status(200).json(photo);
@@ -107,8 +109,9 @@ router.post("/:id/unvote", auth, (async (req: AuthRequest, res) => {
     if (!photo) {
       return res.status(404).json({ error: "Photo not found" });
     }
-    if (photo?.votes.includes(req.user._id)) {
-      photo.votes = photo.votes.filter((id) => !id.equals(req.user._id));
+    // @ts-ignore
+    if (photo?.votes.includes(req?.user?._id)) {
+      photo.votes = photo.votes.filter((id) => !id.equals(req?.user?._id));
     } else {
       return res.status(400).json({ error: "Not voted yet" });
     }
@@ -129,7 +132,7 @@ router.delete("/:id", auth, (async (req: AuthRequest, res) => {
     }
 
     // Check if the user is the owner of the photo
-    if (photo.user.toString() !== req.user._id.toString()) {
+    if (photo.user.toString() !== req?.user?._id.toString()) {
       return res
         .status(403)
         .json({ error: "Unauthorized to delete this photo" });
