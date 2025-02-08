@@ -56,6 +56,7 @@ export default function ExhibitionPhotoApproval() {
         queryClient.invalidateQueries(["exhibition-photos", id]);
         queryClient.invalidateQueries(["photo-approval", id]);
         message.success(`Photo ${accept ? "approved" : "rejected"}`);
+        approvalQuery.refetch();
       },
       onError: (_, args) => {
         message.error(`Failed to ${args.accept ? "approve" : "reject"} photo`);

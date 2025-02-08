@@ -108,16 +108,8 @@ let exhibitions = [
     description: "A collection of stunning nature photography",
     thumbnail_url:
       "https://images.unsplash.com/photo-1506905925346-21bda4d32df4",
-    start_date: new Date(
-      2024,
-      Math.floor(Math.random() * 12),
-      Math.floor(Math.random() * 28)
-    ),
-    end_date: new Date(
-      2024,
-      Math.floor(Math.random() * 12) + 1,
-      Math.floor(Math.random() * 28)
-    ),
+    start_date: new Date(2024, 4, 23),
+    end_date: new Date(2024, 5, 2),
     status: "active",
     photos: Array(),
   },
@@ -126,16 +118,8 @@ let exhibitions = [
     description: "A collection of cityscape photography",
     thumbnail_url:
       "https://images.unsplash.com/photo-1668786418135-6227c68c8391",
-    start_date: new Date(
-      2023,
-      Math.floor(Math.random() * 12),
-      Math.floor(Math.random() * 28)
-    ),
-    end_date: new Date(
-      2023,
-      Math.floor(Math.random() * 12) + 1,
-      Math.floor(Math.random() * 28)
-    ),
+    start_date: new Date(2023, 8, 12),
+    end_date: new Date(2023, 8, 22),
     status: "active",
     photos: Array(),
   },
@@ -144,17 +128,9 @@ let exhibitions = [
     description: "A collection of landscape photography",
     thumbnail_url:
       "https://images.unsplash.com/photo-1501854140801-50d01698950b",
-    start_date: new Date(
-      2024,
-      Math.floor(Math.random() * 12),
-      Math.floor(Math.random() * 28)
-    ),
-    end_date: new Date(
-      2024,
-      Math.floor(Math.random() * 12) + 1,
-      Math.floor(Math.random() * 28)
-    ),
-    status: "active",
+    start_date: new Date(2024, 4, 23),
+    end_date: new Date(2024, 5, 2),
+    status: "past",
     photos: Array(),
   },
   {
@@ -162,16 +138,8 @@ let exhibitions = [
     description: "A collection of wildlife photography",
     thumbnail_url:
       "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
-    start_date: new Date(
-      2023,
-      Math.floor(Math.random() * 12),
-      Math.floor(Math.random() * 28)
-    ),
-    end_date: new Date(
-      2023,
-      Math.floor(Math.random() * 12) + 1,
-      Math.floor(Math.random() * 28)
-    ),
+    start_date: new Date(2024, 2, 12),
+    end_date: new Date(2024, 3, 2),
     status: "past",
     photos: Array(),
   },
@@ -180,16 +148,8 @@ let exhibitions = [
     description: "A collection of abstract photography",
     thumbnail_url:
       "https://images.unsplash.com/photo-1509316785289-025f5b846b35",
-    start_date: new Date(
-      2024,
-      Math.floor(Math.random() * 12),
-      Math.floor(Math.random() * 28)
-    ),
-    end_date: new Date(
-      2024,
-      Math.floor(Math.random() * 12) + 1,
-      Math.floor(Math.random() * 28)
-    ),
+    start_date: new Date(2022, 6, 10),
+    end_date: new Date(2022, 6, 12),
     status: "upcoming",
     photos: Array(),
   },
