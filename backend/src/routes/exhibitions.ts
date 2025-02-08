@@ -1,10 +1,8 @@
 import express, { Response } from "express";
-import { auth, authAdmin, AuthRequest } from "../middlewares/auth";
+import { auth, authAdmin } from "../middlewares/auth";
+import { AuthRequest } from "../types/LocalTypes";
 import { Exhibition } from "../models/Exhibition";
-import { populate } from "dotenv";
 import Photo from "../models/Photo";
-import multer from "multer";
-import path from "path";
 import StorageUpload from "../middlewares/StorageUpload";
 
 const router = express.Router();
@@ -18,15 +16,6 @@ router.get("/", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
-
-// Multer setup for image uploads
-const storage = multer.diskStorage({
-  destination: "uploads/",
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}${path.extname(file.originalname)}`);
-  },
-});
-const upload = multer({ storage });
 
 // Update exhibition details (title, descriptions, dates, thumbnail)
 router.put(
@@ -54,31 +43,6 @@ router.put(
       changeIfNotNull("thumbnail_storage_id", req.uploadedFile);
       await exhibition.save();
       res.json({ message: "Exhibition updated successfully", exhibition });
-    } catch (error) {
-      res.status(500).json({ error: "Server error" });
-    }
-  }
-);
-
-// Upload exhibition thumbnail
-router.post(
-  "/:id/upload-thumbnail",
-  authAdmin,
-  upload.single("thumbnail"),
-  async (req: AuthRequest, res: Response): Promise<any> => {
-    try {
-      const exhibition = await Exhibition.findById(req.params.id);
-      if (!exhibition) {
-        return res.status(404).json({ error: "Exhibition not found" });
-      }
-
-      exhibition.thumbnail_url = `/uploads/${req.file?.filename}`;
-      await exhibition.save();
-
-      res.json({
-        message: "Thumbnail uploaded successfully",
-        url: exhibition.thumbnail_url,
-      });
     } catch (error) {
       res.status(500).json({ error: "Server error" });
     }
@@ -247,7 +211,7 @@ router.post(
         title: req.body.title,
         caption: req.body.caption,
         storage_id: req.uploadedFile,
-        user: req.user._id,
+        user: req.user,
       });
       if (!photo) {
         throw new Error("Failed to create photo object");

@@ -21,8 +21,6 @@ export default function Profile() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const uploadButtonRef = useRef<HTMLInputElement>(null);
 
-  const BASE_URL = "http://localhost:5000";
-
   const userQuery = useQuery(
     ["user", id],
     async () => {
@@ -60,7 +58,7 @@ export default function Profile() {
   const handleProfilePictureUpload = async () => {
     if (selectedFile && user) {
       const formData = new FormData();
-      formData.append("profilePicture", selectedFile);
+      formData.append("file", selectedFile);
 
       try {
         const { data } = await axios.post(
@@ -71,17 +69,6 @@ export default function Profile() {
               "Content-Type": "multipart/form-data",
             },
           }
-        );
-
-        setUser((prevUser) =>
-          prevUser
-            ? {
-                ...prevUser,
-                avatar_url: `${BASE_URL}${
-                  data.avatar_url
-                }?t=${new Date().getTime()}`,
-              }
-            : null
         );
 
         setSelectedFile(null);
@@ -106,8 +93,7 @@ export default function Profile() {
   }
 
   const avatarSrc =
-    preview ||
-    (user.avatar_url ? `${BASE_URL}${user.avatar_url}` : default_avater);
+    preview || (user.avatar_url ? user.avatar_url : default_avater);
 
   return (
     <div className="max-w-7xl min-h-dvh mx-auto px-4 py-8">

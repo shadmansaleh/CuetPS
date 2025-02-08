@@ -1,13 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User";
+import { AuthRequest } from "../types/LocalTypes";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
-
-export interface AuthRequest extends Request {
-  user?: any;
-  uploadedFile?: string;
-}
 
 export const auth = async (
   req: AuthRequest,
@@ -38,7 +34,7 @@ export const authAdmin = [
   auth,
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
-      if (req.user.role !== "admin") {
+      if (req.user?.role !== "admin") {
         throw new Error();
       }
       next();

@@ -1,8 +1,9 @@
 import { Response } from "express";
 import * as types from "../types/LocalTypes";
-import { User } from "../models/User";
+import { IUser, User } from "../models/User";
 import File from "../models/FileModel";
 import fs from "fs/promises";
+import { Document } from "mongoose";
 
 export const StorageUploadController = async (
   req: types.AuthRequest & { file: Express.Multer.File },
@@ -56,7 +57,10 @@ export const StorageGetController = async (
   }
 };
 
-export const StorageDeleteByID = async (id: string, user?: types.JWT_USER) => {
+export const StorageDeleteByID = async (
+  id: string,
+  user?: Document<unknown, any, IUser> & IUser
+) => {
   const file = await File.findById(id).exec();
   if (!file) throw new Error("File not found");
   if (file?.owner?.toString() !== user?.id.toString())

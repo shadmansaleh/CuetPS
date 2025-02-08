@@ -27,8 +27,9 @@ export const StorageUpload = async (
       permission: req.body.permission || "public",
       permission_allowlist: allow_list,
     });
+    // save and calculate aspect ratio of uploaded photo
     await file.save();
-    req.uploadedFile = file._id.toString();
+    req.uploadedFile = file;
     next();
   } catch (e: any) {
     console.error(e.message);

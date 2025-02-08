@@ -29,6 +29,7 @@ import Loading from "./components/Loading";
 function App() {
   // const [darkMode] = useDarkMode(); // No need to reset it
   const { loading: authLoading } = useAuth();
+  const { user } = useAuth();
 
   const AppRoutes = useRoutes([
     {
@@ -64,7 +65,7 @@ function App() {
       children: [
         { index: true, element: <AdminPage /> },
         { path: ":path", element: <AdminPage /> },
-        { path: "exhibitions/:id", element: <ExhibitionDetail /> },
+        // { path: "exhibitions/:id", element: <ExhibitionDetail /> },
         { path: "exhibitions/:id/photos", element: <ExhibitionPhotos /> },
         {
           path: "exhibitions/:id/approvals",
@@ -76,7 +77,10 @@ function App() {
       path: `${__BASE_URL__}/`,
       element: <ProtectedRoute role={Role.AUTH} />,
       children: [
-        { path: "profile", element: <Navigate to="/profile/me" replace /> }, // Redirect `/profile` to `/profile/me`
+        {
+          path: "profile",
+          element: <Navigate to={`/profile/${user?.name}`} replace />,
+        }, // Redirect `/profile` to `/profile/me`
         { path: "profile/:id", element: <Profile /> }, // Profile with ID
       ],
     },

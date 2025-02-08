@@ -1,10 +1,12 @@
 import { Request } from "express";
 import { Document } from "mongoose";
+import { IUser } from "../models/User";
+import { IFile } from "../models/FileModel";
 
-export type AuthRequest = Request & {
-  user?: JWT_USER;
-  uploadedFile?: string;
-};
+export interface AuthRequest extends Request {
+  user?: Document<unknown, any, IUser> & IUser;
+  uploadedFile?: Document<unknown, any, IFile> & IFile;
+}
 
 export type JWT_USER = {
   name: string;

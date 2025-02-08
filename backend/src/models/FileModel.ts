@@ -1,6 +1,19 @@
 import mongoose from "mongoose";
+import { Schema } from "mongoose";
 
-const FileSchema = new mongoose.Schema({
+export interface IFile extends mongoose.Document {
+  owner: mongoose.Schema.Types.ObjectId;
+  path: string;
+  fname: string;
+  uploadFname: string;
+  filetype: string;
+  url: string;
+  permission: string;
+  aspect_ratio: number;
+  permission_allowlist: mongoose.Schema.Types.ObjectId[];
+}
+
+const FileSchema: Schema<IFile> = new mongoose.Schema({
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -13,6 +26,10 @@ const FileSchema = new mongoose.Schema({
   fname: {
     type: String,
     required: true,
+  },
+  aspect_ratio: {
+    type: Number,
+    default: 1,
   },
   uploadFname: {
     type: String,

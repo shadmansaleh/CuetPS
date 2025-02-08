@@ -16,6 +16,7 @@ import Loading from "@/components/Loading";
 import styles from "./AdminPage.module.css";
 import { Exhibition } from "@/types";
 import { useNavigate } from "react-router-dom";
+import ExhibitionDetail from "./ExhibitionDetail";
 
 const { Title } = Typography;
 
@@ -24,6 +25,7 @@ const { Option } = Select;
 
 function ExhibitionTab() {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [editModal, setEditModal] = useState({ visible: false, id: "" });
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("all");
   const navigate = useNavigate();
@@ -53,7 +55,8 @@ function ExhibitionTab() {
   };
 
   const handleCancelModal = () => {
-    setIsModalVisible(false);
+    if (isModalVisible) setIsModalVisible(false);
+    if (editModal.visible) setEditModal({ visible: false, id: "" });
   };
 
   const getFilteredExhibitions = () => {
@@ -73,8 +76,8 @@ function ExhibitionTab() {
   );
 
   const handleMenuClick = ({ id, key }: { key: string; id: string }) => {
-    if (key === "viewDetails") {
-      navigate(`/admin/exhibitions/${id}`);
+    if (key === "editDetails") {
+      setEditModal({ visible: true, id });
     } else if (key === "seeAllPhotos") {
       navigate(`/admin/exhibitions/${id}/photos`);
     } else if (key === "seeAllRequests") {
@@ -86,7 +89,7 @@ function ExhibitionTab() {
     <Menu
       onClick={({ key }) => handleMenuClick({ key, id })}
       items={[
-        { label: "View Details", key: "viewDetails" },
+        { label: "Edit Details", key: "editDetails" },
         { label: "See Photos", key: "seeAllPhotos" },
         { label: "See Requests", key: "seeAllRequests" },
       ]}
@@ -115,7 +118,7 @@ function ExhibitionTab() {
       render: (text: string, record: Exhibition) => (
         <div
           onClick={() =>
-            handleMenuClick({ key: "viewDetails", id: record._id })
+            handleMenuClick({ key: "editDetails", id: record._id })
           }
           className="cursor-pointer hover:text-blue-600"
         >
@@ -253,7 +256,27 @@ function ExhibitionTab() {
       >
         <CreateExhibition
           onSuccess={() => {
-            setIsModalVisible(false);
+            handleCancelModal();
+            exhibitionQuery.refetch();
+          }}
+        />
+      </Modal>
+
+      <Modal
+        centered
+        open={editModal.visible}
+        onCancel={handleCancelModal}
+        footer={null}
+        destroyOnClose
+        width={600}
+        styles={{
+          body: { padding: 0 },
+        }}
+      >
+        <ExhibitionDetail
+          id={editModal.id}
+          onSuccess={() => {
+            handleCancelModal();
             exhibitionQuery.refetch();
           }}
         />

@@ -3,18 +3,6 @@ const { v4: uuidv4 } = require("uuid");
 import path from "path";
 import { Request } from "express";
 
-const globalStorageDisk = multer.diskStorage({
-  destination: function (_req: Request, file: Express.Multer.File, cb: any) {
-    cb(null, "./public/uploads");
-  },
-  filename: function (_req: Request, file: Express.Multer.File, cb: any) {
-    const fname = `${uuidv4()}_${path.extname(file.originalname)}`;
-    _req.body.fname = fname;
-    _req.body.url = `http://localhost:5000/uploads/${fname}`;
-    cb(null, fname);
-  },
-});
-
 const secureStorageDisk = multer.diskStorage({
   destination: function (_req: Request, file: Express.Multer.File, cb: any) {
     cb(null, "./public/storage");
@@ -37,6 +25,5 @@ const fileFilter = (_req: Request, file: Express.Multer.File, cb: any) => {
   }
 };
 
-export const globalStorage = multer({ storage: globalStorageDisk, fileFilter });
 export const secureStorage = multer({ storage: secureStorageDisk, fileFilter });
-export default globalStorage;
+export default secureStorage;

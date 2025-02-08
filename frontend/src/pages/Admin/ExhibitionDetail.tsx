@@ -16,8 +16,14 @@ import dayjs from "dayjs";
 import { useQuery } from "react-query";
 import { Exhibition } from "@/types";
 
-const ExhibitionDetail: React.FC = () => {
-  const { id } = useParams();
+const ExhibitionDetail = ({
+  id,
+  onSuccess,
+}: {
+  id: string;
+  onSuccess: () => void;
+}) => {
+  // const { id } = useParams();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [exhibition, setExhibition] = useState<Exhibition | null>(null);
@@ -77,6 +83,7 @@ const ExhibitionDetail: React.FC = () => {
       });
       exhibitionQuery.refetch();
       message.success("Exhibition updated successfully!");
+      onSuccess();
     } catch (error) {
       console.error("Error updating exhibition:", error);
       message.error("Failed to update exhibition.");

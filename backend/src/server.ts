@@ -29,12 +29,8 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(LogRequest);
 
-// Ensure uploads directory exists
-ensureDirExists(path.join(__dirname, "../uploads/profile_pictures"));
+// Ensure storage directory exists
 ensureDirExists(path.join(__dirname, "../public/storage"));
-
-// Serve static files from uploads
-app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 // Health Check Route
 app.get("/", (req: Request, res: Response) => {
