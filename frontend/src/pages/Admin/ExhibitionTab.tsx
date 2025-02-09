@@ -7,6 +7,7 @@ import {
   Select,
   Menu,
   Dropdown,
+  message,
 } from "antd";
 import { useState } from "react";
 import CreateExhibition from "./CreateExhibition";
@@ -84,14 +85,38 @@ function ExhibitionTab() {
       navigate(`/admin/exhibitions/${id}/approvals`);
     }
   };
-
+  
+  const handleDeleteExhibition = async (id: string) => {
+    Modal.confirm({
+      title: "Are you sure?",
+      content: "This action will permanently delete the exhibition and its associated photos.",
+      okText: "Yes, Delete",
+      cancelText: "Cancel",
+      okType: "danger",
+      onOk: async () => {
+        try {
+          await axios.delete(`/api/exhibitions/${id}`);
+          exhibitionQuery.refetch(); // Refresh the exhibition list
+          message.success("Exhibition deleted successfully!");
+        } catch (error) {
+          message.error("Failed to delete exhibition.");
+          console.error("Error:", error);
+        }
+      },
+    });
+  };
+  
   const menu = (id: string) => (
     <Menu
-      onClick={({ key }) => handleMenuClick({ key, id })}
+      onClick={({ key }) => {
+        if (key === "deleteExhibition") handleDeleteExhibition(id);
+        else handleMenuClick({ key, id });
+      }}
       items={[
         { label: "Edit Details", key: "editDetails" },
         { label: "See Photos", key: "seeAllPhotos" },
         { label: "See Requests", key: "seeAllRequests" },
+        { label: <span style={{ color: "red" }}>Delete Exhibition</span>, key: "deleteExhibition" },
       ]}
     />
   );
