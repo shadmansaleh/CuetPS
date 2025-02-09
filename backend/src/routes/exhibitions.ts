@@ -237,4 +237,24 @@ router.post(
   }
 );
 
+router.delete("/:id", authAdmin, async (req: AuthRequest, res: Response): Promise<any> => {
+  try {
+    const exhibition = await Exhibition.findById(req.params.id);
+    if (!exhibition) {
+      return res.status(404).json({ error: "Exhibition not found" });
+    }
+
+    // Delete associated photos
+    await Photo.deleteMany({ _id: { $in: exhibition.photos } });
+
+    // Delete exhibition
+    await Exhibition.findByIdAndDelete(req.params.id);
+
+    res.json({ message: "Exhibition deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+
 export default router;
