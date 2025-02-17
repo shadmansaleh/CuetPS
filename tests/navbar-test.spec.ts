@@ -34,7 +34,7 @@ test.describe("Navbar", () => {
     await page.getByRole("button", { name: "About us" }).click();
     await expect(page).toHaveURL("http://localhost:3000/about");
     await page.getByRole("button", { name: "Profile" }).click();
-    await expect(page).toHaveURL("http://localhost:3000/profile");
+    await expect(page).toHaveURL("http://localhost:3000/profile/shadman");
     await expect(page.getByRole("button", { name: "Login" })).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Logout" })).toBeVisible();
     await page.getByRole("button", { name: "Logout" }).click();

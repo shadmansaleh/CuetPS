@@ -149,8 +149,9 @@ test.describe("Exhibition page", () => {
       button: "right",
     });
     await expect(
-      page.getByRole("heading", { name: "Exhibitions" })
+      page.getByRole("heading", { name: "Exhibitions", exact: true })
     ).toBeVisible();
+
     await page.getByRole("link", { name: "Nature Photography Nature" }).click();
     await expect(page).toHaveURL(/http:\/\/localhost:3000\/exhibitions\/\d+/);
     await expect(await page.locator("img").count()).toBeGreaterThan(5);

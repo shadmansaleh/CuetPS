@@ -71,7 +71,7 @@ test.describe("AdminPage", () => {
     // Verify exhibitions are displayed
     const exhibitions = ["Nature Photography", "Cityscapes"];
     for (const exhibition of exhibitions) {
-      await expect(page.locator(`text=${exhibition}`)).toBeVisible();
+      await expect(page.getByText(exhibition, { exact: true })).toBeVisible();
     }
   });
 
