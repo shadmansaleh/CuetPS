@@ -11,10 +11,11 @@ export default function AboutUs() {
           <div>
             <h2 className="text-3xl font-semibold mb-4">What is CuetPS?</h2>
             <p className="text-lg">
-              CuetPS is a platform dedicated to celebrating the art of photography at CUET. Our mission
-              is to inspire creativity, foster collaboration, and showcase the breathtaking work of
-              talented photographers. From exhibitions to interactive community events, we provide a
-              space where visual storytelling comes to life.
+              CuetPS is a platform dedicated to celebrating the art of
+              photography at CUET. Our mission is to inspire creativity, foster
+              collaboration, and showcase the breathtaking work of talented
+              photographers. From exhibitions to interactive community events,
+              we provide a space where visual storytelling comes to life.
             </p>
           </div>
           <img
@@ -34,9 +35,17 @@ export default function AboutUs() {
           <div>
             <h2 className="text-3xl font-semibold mb-4">Our Goals</h2>
             <ul className="text-lg list-disc list-inside">
-              <li className="mb-2">To provide a platform for photographers to showcase their work.</li>
-              <li className="mb-2">To connect individuals through the universal language of photography.</li>
-              <li className="mb-2">To host regular exhibitions and competitions to nurture creativity.</li>
+              <li className="mb-2">
+                To provide a platform for photographers to showcase their work.
+              </li>
+              <li className="mb-2">
+                To connect individuals through the universal language of
+                photography.
+              </li>
+              <li className="mb-2">
+                To host regular exhibitions and competitions to nurture
+                creativity.
+              </li>
             </ul>
           </div>
         </section>
@@ -46,10 +55,11 @@ export default function AboutUs() {
           <div>
             <h2 className="text-3xl font-semibold mb-4">Future Works</h2>
             <p className="text-lg">
-              We aim to expand CuetPS into a global platform, incorporating innovative features like
-              virtual exhibitions, photography tutorials, and international collaborations. Our vision
-              is to become a hub for creative minds and a source of inspiration for photography
-              enthusiasts worldwide.
+              We aim to expand CuetPS into a global platform, incorporating
+              innovative features like virtual exhibitions, photography
+              tutorials, and international collaborations. Our vision is to
+              become a hub for creative minds and a source of inspiration for
+              photography enthusiasts worldwide.
             </p>
           </div>
           <img
@@ -63,11 +73,18 @@ export default function AboutUs() {
           <h2 className="text-3xl font-semibold mb-6">Our Administration</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { name: "Pritha Saha", role: "Admin1", image: "admin1.jpg" },
-              { name: "Adiba Fairooz Chowdhury", role: "Admin2", image: "admin2.jpg" },
-              { name: "Shadman Saleh", role: "Admin3", image: "admin3.jpg" },
+              { name: "Shadman Saleh", role: "Developer", image: "dev1.jpg" },
+              {
+                name: "Adiba Fairooz Chowdhury",
+                role: "Developer",
+                image: "dev2.jpg",
+              },
+              { name: "Pritha Saha", role: "Developer", image: "dev3.jpg" },
             ].map((admin, index) => (
-              <div key={index} className="relative group overflow-hidden rounded-lg shadow-lg">
+              <div
+                key={index}
+                className="relative group overflow-hidden rounded-lg shadow-lg"
+              >
                 <img
                   src={admin.image}
                   alt={admin.name}
