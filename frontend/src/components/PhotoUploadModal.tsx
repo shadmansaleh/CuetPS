@@ -7,10 +7,12 @@ import axios from "@/utils/axios";
 const PhotoUploadModal = ({
   className = "",
   exhibitionId,
+  onUpload = () => {},
   children,
 }: {
   className?: string;
   children?: React.ReactNode;
+  onUpload: () => void;
   exhibitionId: string;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -51,6 +53,7 @@ const PhotoUploadModal = ({
           setIsOpen(false);
           setSelectedFile(null);
           setPreviewUrl(null);
+          onUpload();
         }
       } catch (error) {
         enqueueSnackbar("Submit failed", {

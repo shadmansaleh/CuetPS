@@ -24,6 +24,17 @@ export default function ExhibitionDetails() {
     }
   );
 
+  const approvalQuery = useQuery(
+    ["exhibition", id, "approval", user?._id],
+    async () => {
+      const { data } = await axios.get(`/api/exhibitions/${id}/get_pending`);
+      return data;
+    },
+    {
+      enabled: !!user?._id && !!id,
+    }
+  );
+
   const handleVote = async (photoId: string) => {
     if (!exhibition) return;
     try {
@@ -52,7 +63,7 @@ export default function ExhibitionDetails() {
     }
   };
 
-  if (exhibitionQuery.isLoading) {
+  if (exhibitionQuery.isLoading || approvalQuery.isLoading) {
     return <Loading />;
   }
 
@@ -75,6 +86,7 @@ export default function ExhibitionDetails() {
                 <PhotoUploadModal
                   className="sticky bottom-12 right-12"
                   exhibitionId={id as string}
+                  onUpload={() => approvalQuery.refetch()}
                 >
                   <button className="btn btn-outline btn-md btn-primary cursor-pointer">
                     Upload
@@ -99,6 +111,21 @@ export default function ExhibitionDetails() {
             </span>
           </div>
         </div>
+        {approvalQuery.isSuccess && approvalQuery.data.length > 0 && (
+          <>
+            <div className="mb-8">
+              <div className="relative">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">
+                  Approval Pending
+                </h2>
+                <div className="absolute inset-0 bg-gray-200 bg-opacity-50 z-10"></div>
+                <MasonryGallery photos={approvalQuery.data} />
+              </div>
+            </div>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Photos</h2>
+          </>
+        )}
+
         <MasonryGallery photos={exhibition.photos} onVote={handleVote} />
       </div>
     </div>

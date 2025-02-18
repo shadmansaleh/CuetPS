@@ -4,6 +4,7 @@ import { AuthRequest } from "../types/LocalTypes";
 import { Exhibition } from "../models/Exhibition";
 import Photo from "../models/Photo";
 import StorageUpload from "../middlewares/StorageUpload";
+import User from "../models/User";
 
 const router = express.Router();
 
@@ -119,6 +120,36 @@ router.get(
   }
 );
 
+router.get(
+  "/:id/get_pending",
+  auth,
+  async (req: AuthRequest, res: Response): Promise<any> => {
+    try {
+      const exhibition = await Exhibition.findById(req.params.id)
+        .populate({
+          path: "photos",
+          match: { selected: false },
+          populate: "image",
+        })
+        .select("photos");
+      if (!exhibition) {
+        return res.status(404).json({ error: "Exhibition not found" });
+      }
+
+      let approvalPending = exhibition.photos
+        .filter((photo: any) => {
+          return (
+            !photo.selected && photo.image.user.toString() == req?.user?._id
+          );
+        })
+        .map((photo: any) => photo.image);
+      return res.status(200).json(approvalPending);
+    } catch (error) {
+      res.status(500).json({ error: "Server error" });
+    }
+  }
+);
+
 router.post(
   "/:id/approve/:photoId",
   authAdmin,
@@ -138,9 +169,9 @@ router.post(
 
       photo.selected = true;
       await exhibition.save();
-      res.json(photo);
+      return res.status(200).json({ msg: "approved photo" });
     } catch (error) {
-      res.status(500).json({ error: "Server error" });
+      return res.status(500).json({ error: "Server error" });
     }
   }
 );
@@ -164,10 +195,10 @@ router.post(
 
       exhibition.photos.pull({ _id: photo._id });
       await exhibition.save();
-      res.status(200);
+      return res.status(200).json({ msg: "rejected photo" });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Server error" });
+      return res.status(500).json({ error: "Server error" });
     }
   }
 );
@@ -237,24 +268,27 @@ router.post(
   }
 );
 
-router.delete("/:id", authAdmin, async (req: AuthRequest, res: Response): Promise<any> => {
-  try {
-    const exhibition = await Exhibition.findById(req.params.id);
-    if (!exhibition) {
-      return res.status(404).json({ error: "Exhibition not found" });
+router.delete(
+  "/:id",
+  authAdmin,
+  async (req: AuthRequest, res: Response): Promise<any> => {
+    try {
+      const exhibition = await Exhibition.findById(req.params.id);
+      if (!exhibition) {
+        return res.status(404).json({ error: "Exhibition not found" });
+      }
+
+      // Delete associated photos
+      await Photo.deleteMany({ _id: { $in: exhibition.photos } });
+
+      // Delete exhibition
+      await Exhibition.findByIdAndDelete(req.params.id);
+
+      res.json({ message: "Exhibition deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ error: "Server error" });
     }
-
-    // Delete associated photos
-    await Photo.deleteMany({ _id: { $in: exhibition.photos } });
-
-    // Delete exhibition
-    await Exhibition.findByIdAndDelete(req.params.id);
-
-    res.json({ message: "Exhibition deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ error: "Server error" });
   }
-});
-
+);
 
 export default router;
