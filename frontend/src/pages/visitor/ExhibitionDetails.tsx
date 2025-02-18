@@ -102,7 +102,6 @@ export default function ExhibitionDetails() {
           </div>
           <p className="text-gray-600 mb-4">{exhibition.description}</p>
           <div className="flex space-x-4 text-sm text-gray-500">
-            <span>Status: {exhibition.status}</span>
             <span>
               Start: {new Date(exhibition.start_date).toLocaleDateString()}
             </span>
