@@ -17,6 +17,7 @@ import photoRoutes from "./routes/photos";
 import userRoutes from "./routes/user";
 import exhibitionRoutes from "./routes/exhibitions";
 import StorageRoute from "./routes/StorageRoute";
+import bodyParser from "body-parser";
 
 dotenv.config();
 const app = express();
@@ -27,6 +28,7 @@ app.use(RateLimiter(2000));
 app.use(cors({ origin: ORIGIN_URL, credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(LogRequest);
 
 // Ensure storage directory exists
