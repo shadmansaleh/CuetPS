@@ -41,7 +41,7 @@ photoSchema.pre("save", function (next) {
 });
 
 // url is derived as process.env.BACKEND_URL + /api/storage/ + id
-photoSchema.post(["find", "findOne"], function (docs) {
+const setImageUrl = function (docs: any) {
   const documents = Array.isArray(docs) ? docs : [docs];
   documents.forEach((doc: any) => {
     if (doc?.storage_id) {
@@ -52,7 +52,11 @@ photoSchema.post(["find", "findOne"], function (docs) {
     }
   });
   return Array.isArray(docs) ? documents : documents[0];
-});
+};
+
+photoSchema.post("find", setImageUrl);
+photoSchema.post("findOne", setImageUrl);
+photoSchema.post("aggregate", setImageUrl);
 
 export const Photo = mongoose.model("Photo", photoSchema);
 export default Photo;
