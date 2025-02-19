@@ -62,5 +62,4 @@ test("test photo upload", async ({ page }) => {
     .setInputFiles("tests/assets/photo2.jpg");
   await page.locator('input[type="submit"]').click();
   await expect(page.locator(".absolute").first()).toBeVisible();
-  await page.getByRole("button", { name: "Logout" }).click();
 });

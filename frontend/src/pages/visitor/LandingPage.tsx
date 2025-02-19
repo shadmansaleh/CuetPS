@@ -1,18 +1,18 @@
 import { Link } from "react-router-dom";
 import { Camera, Image, Award } from "lucide-react";
 import { motion } from "framer-motion";
-
+import bg from "@/assets/pexels-asphotograpy-212372.jpg";
 
 export default function LandingPage() {
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section with Full Background Image */}
       <div
-        className="relative bg-cover bg-center w-full h-screen flex items-center justify-center mb-16"
-        style={{ backgroundImage: "url('/cuetps.jpg')" }}
+        className="relative bg-cover bg-center w-full h-screen flex items-center justify-center mb-16 -translate-y-16"
+        // style={{ backgroundImage: "url('/cuetps.jpg')" }}
+        style={{ backgroundImage: "url('/pexels-asphotograpy-212372.jpg')" }}
       >
-        <div className="bg-transparent bg-opacity-50 p-8 rounded-xl text-center text-white">
+        <div className="bg-transparent bg-opacity-50 p-8 rounded-xl text-center text-gray-900 translate-y-12">
           {/* Animated Heading */}
           <motion.h1
             className="text-4xl md:text-6xl font-bold mb-4"
@@ -46,9 +46,24 @@ export default function LandingPage() {
       {/* Features Section */}
       <div className="max-w-7xl mx-auto px-4 py-12 pb-15 grid md:grid-cols-3 gap-8">
         {[
-          { Icon: Camera, title: "Share Your Photos", description: "Upload and share your best photographs with our community" },
-          { Icon: Image, title: "Browse Gallery", description: "Explore stunning photographs from talented photographers" },
-          { Icon: Award, title: "Join Exhibitions", description: "Participate in themed exhibitions and showcase your work" },
+          {
+            Icon: Camera,
+            title: "Share Your Photos",
+            description:
+              "Upload and share your best photographs with our community",
+          },
+          {
+            Icon: Image,
+            title: "Browse Gallery",
+            description:
+              "Explore stunning photographs from talented photographers",
+          },
+          {
+            Icon: Award,
+            title: "Join Exhibitions",
+            description:
+              "Participate in themed exhibitions and showcase your work",
+          },
         ].map((feature, index) => (
           <motion.div
             key={index}
@@ -84,8 +99,8 @@ export default function LandingPage() {
             transition={{ duration: 1, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            CuetPS is a vibrant community of photography enthusiasts, curators, and
-            creators dedicated to celebrating the art of photography through
+            CuetPS is a vibrant community of photography enthusiasts, curators,
+            and creators dedicated to celebrating the art of photography through
             exhibitions, workshops, and collaborative projects.
           </motion.p>
 
@@ -114,7 +129,9 @@ export default function LandingPage() {
             transition={{ duration: 1 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">Still got questions?</h2>
+            <h2 className="text-4xl font-bold text-gray-800 mb-4">
+              Still got questions?
+            </h2>
           </motion.div>
 
           <motion.p
@@ -142,8 +159,6 @@ export default function LandingPage() {
           </motion.div>
         </div>
       </div>
-
-
     </div>
   );
 }
