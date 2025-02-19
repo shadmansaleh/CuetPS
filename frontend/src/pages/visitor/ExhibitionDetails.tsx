@@ -125,7 +125,11 @@ export default function ExhibitionDetails() {
           </>
         )}
 
-        <MasonryGallery photos={exhibition.photos} onVote={handleVote} />
+        <MasonryGallery
+          photos={exhibition.photos}
+          onVote={handleVote}
+          sortbyVotes={true}
+        />
       </div>
     </div>
   );

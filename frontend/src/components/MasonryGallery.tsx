@@ -9,11 +9,13 @@ import { twMerge } from "tailwind-merge";
 interface MasonryGalleryProps {
   photos: Photo[];
   onVote?: (photoId: string) => Promise<void>;
+  sortbyVotes?: boolean;
 }
 
 export default function MasonryGallery({
   photos,
   onVote,
+  sortbyVotes,
 }: MasonryGalleryProps) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const { user } = useAuth();
@@ -33,13 +35,18 @@ export default function MasonryGallery({
   // }));
 
   // Sort photos based on aspect ratio before rendering
-  const sortedPhotos = [...photos].sort((a, b) => {
-    const heightA = Math.round(100 / a.aspect_ratio);
-    const heightB = Math.round(100 / b.aspect_ratio);
-    return heightA - heightB;
-  });
-  photos = sortedPhotos;
 
+  // const sortedPhotos = [...photos].sort((a, b) => {
+  //   const heightA = Math.round(100 / a.aspect_ratio);
+  //   const heightB = Math.round(100 / b.aspect_ratio);
+  //   return heightA - heightB;
+  // });
+  if (sortbyVotes) {
+    const sortedPhotos = [...photos].sort((a, b) => {
+      return b.votes.length - a.votes.length;
+    });
+    photos = sortedPhotos;
+  }
   return (
     <>
       <Masonry
