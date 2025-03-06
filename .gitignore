@@ -29,3 +29,5 @@ dist-ssr
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+/backend-go/
