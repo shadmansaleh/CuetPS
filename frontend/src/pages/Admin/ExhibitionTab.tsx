@@ -17,7 +17,7 @@ import Loading from "@/components/Loading";
 import styles from "./AdminPage.module.css";
 import { Exhibition } from "@/types";
 import { useNavigate } from "react-router-dom";
-import EditExhibition from "./EditExhibition.tsx";
+import EditExhibition from "./EditExhibition";
 
 const { Title } = Typography;
 
@@ -44,11 +44,11 @@ function ExhibitionTab() {
           data.sort(
             (a: Exhibition, b: Exhibition) =>
               new Date(b.start_date).getTime() -
-              new Date(a.start_date).getTime()
-          )
+              new Date(a.start_date).getTime(),
+          ),
         );
       },
-    }
+    },
   );
 
   const handleCreateExhibitionClick = () => {
@@ -73,7 +73,7 @@ function ExhibitionTab() {
   };
   // Filter exhibitions based on search query
   const filteredExhibitions = getFilteredExhibitions().filter((exhibition) =>
-    exhibition.title.toLowerCase().includes(searchQuery.toLowerCase())
+    exhibition.title.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const handleMenuClick = ({ id, key }: { key: string; id: string }) => {
@@ -85,11 +85,12 @@ function ExhibitionTab() {
       navigate(`/admin/exhibitions/${id}/approvals`);
     }
   };
-  
+
   const handleDeleteExhibition = async (id: string) => {
     Modal.confirm({
       title: "Are you sure?",
-      content: "This action will permanently delete the exhibition and its associated photos.",
+      content:
+        "This action will permanently delete the exhibition and its associated photos.",
       okText: "Yes, Delete",
       cancelText: "Cancel",
       okType: "danger",
@@ -105,7 +106,7 @@ function ExhibitionTab() {
       },
     });
   };
-  
+
   const menu = (id: string) => (
     <Menu
       onClick={({ key }) => {
@@ -116,7 +117,10 @@ function ExhibitionTab() {
         { label: "Edit Details", key: "editDetails" },
         { label: "See Photos", key: "seeAllPhotos" },
         { label: "See Requests", key: "seeAllRequests" },
-        { label: <span style={{ color: "red" }}>Delete Exhibition</span>, key: "deleteExhibition" },
+        {
+          label: <span style={{ color: "red" }}>Delete Exhibition</span>,
+          key: "deleteExhibition",
+        },
       ]}
     />
   );

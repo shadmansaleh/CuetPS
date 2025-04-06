@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Camera, Image, Award } from "lucide-react";
 import { motion } from "framer-motion";
-import bg from "@/assets/pexels-asphotograpy-212372.jpg";
+// import bg from "@/assets/pexels-asphotograpy-212372.jpg";
 
 export default function LandingPage() {
   return (

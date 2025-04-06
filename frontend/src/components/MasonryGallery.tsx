@@ -4,7 +4,7 @@ import { Heart } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import ImageModal from "./ImageModal";
 import type { Photo } from "../types";
-import { twMerge } from "tailwind-merge";
+// import { twMerge } from "tailwind-merge";
 
 interface MasonryGalleryProps {
   photos: Photo[];
@@ -100,7 +100,7 @@ export default function MasonryGallery({
           onClose={() => setSelectedIndex(null)}
           onNext={() =>
             setSelectedIndex((prev) =>
-              Math.min((prev || 0) + 1, photos.length - 1)
+              Math.min((prev || 0) + 1, photos.length - 1),
             )
           }
           onPrevious={() =>
